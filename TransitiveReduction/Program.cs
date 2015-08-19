@@ -7,6 +7,7 @@ using QuickGraph.Graphviz;
 using QuickGraph.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -143,7 +144,14 @@ namespace TransitiveReduction
             }
             else if (step == 3)
             {
-                ReduceADGraph(adGraph);
+                RedirectADGraph(adGraph);
+
+                var outFileData = OutputToDotFile(adGraph);
+                memstream = new MemoryStream(outFileData);
+            }
+            else if (step == 4)
+            {
+                MergeADGraph(adGraph);
 
                 var outFileData = OutputToDotFile(adGraph);
                 memstream = new MemoryStream(outFileData);
@@ -231,7 +239,7 @@ namespace TransitiveReduction
             }
             sb.Append("}");
 
-            using (var fwriter = File.Create("out.dot"))
+            using (var fwriter = File.Create("out" + step.ToString() + ".dot"))
             {
                 Byte[] info = new UTF8Encoding(true).GetBytes(sb.ToString());
                 fwriter.Write(info, 0, info.Length);
@@ -274,17 +282,17 @@ namespace TransitiveReduction
             return adGraph;
         }
 
-        private static void ReduceADGraph(BidirectionalGraph<ADVertex, ADEdge<ADVertex>> adGraph)
+        private static void RedirectADGraph(BidirectionalGraph<ADVertex, ADEdge<ADVertex>> adGraph)
         {
             // Go over every vertex
-            foreach (var vertex in adGraph.Vertices)
+            foreach (var pivotVertex in adGraph.Vertices)
             {
                 // We only care at the moment about activity end vertice
-                if (vertex.Type == ActivityVertexType.ActivityEnd)
+                if (pivotVertex.Type == ActivityVertexType.ActivityEnd)
                 {
                     // Get all the edges going out of this vertex
                     IEnumerable<ADEdge<ADVertex>> foundOutEdges;
-                    if (adGraph.TryGetOutEdges(vertex, out foundOutEdges))
+                    if (adGraph.TryGetOutEdges(pivotVertex, out foundOutEdges))
                     {
                         var commonDependenciesForAllTargets = new HashSet<ADVertex>();
                         // Find the common dependencies for all target vertice
@@ -317,7 +325,7 @@ namespace TransitiveReduction
                         }
 
                         // Now, if we have some common dependncies of all targets which are not the current vertex - they should be redirected
-                        foreach (var commonDependency in commonDependenciesForAllTargets.Where(d => d != vertex))
+                        foreach (var commonDependency in commonDependenciesForAllTargets.Where(d => d != pivotVertex))
                         {
                             IEnumerable<ADEdge<ADVertex>> edgesOutOfDependency;
                             if (adGraph.TryGetOutEdges(commonDependency, out edgesOutOfDependency))
@@ -335,8 +343,97 @@ namespace TransitiveReduction
                             // Else should never happen
 
                             // This dependency should point at this vertex
-                            var edgeToAdd = new ADEdge<ADVertex>(commonDependency, vertex);
+                            var edgeToAdd = new ADEdge<ADVertex>(commonDependency, pivotVertex);
                             adGraph.AddEdge(edgeToAdd);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void MergeADGraph(BidirectionalGraph<ADVertex, ADEdge<ADVertex>> adGraph)
+        {
+            // Go over all non-activity edges - and try to merge them
+            var nonActivityEdges = adGraph.Edges.Where(e => !e.ActivityId.HasValue).ToList();
+            foreach (var edge in nonActivityEdges)
+            {
+                // If this is a single edge out or a single edge in - it adds no information to the graph and can be merged.
+                var outDegree = adGraph.OutDegree(edge.Source);
+                var inDegree = adGraph.InDegree(edge.Target);
+                if (outDegree == 1 || inDegree == 1)
+                {
+                    // Remove the vertex which has no other edges connected to it
+                    if (outDegree == 1 && inDegree != 1)
+                    {
+                        IEnumerable<ADEdge<ADVertex>> allIncoming;
+                        if (!adGraph.TryGetInEdges(edge.Source, out allIncoming))
+                        {
+                            allIncoming = new List<ADEdge<ADVertex>>();
+                        }
+
+                        bool abortMerge = false;
+
+                        // Sanity check - don't make parallel edges (can have better huristic for this?)
+                        foreach (var incomingEdge in allIncoming.ToList()) {
+                            ADEdge<ADVertex> dummy;
+                            if (adGraph.TryGetEdge(incomingEdge.Source, edge.Target, out dummy))
+                            {
+                                abortMerge = true;
+                            }
+                        }
+
+                        if (!abortMerge)
+                        {
+                            // Add the edges with the new source vertex
+                            // And remove the old edges
+                            foreach (var incomingEdge in allIncoming.ToList())
+                            {
+                                adGraph.AddEdge(new ADEdge<ADVertex>(incomingEdge.Source, edge.Target, incomingEdge.ActivityId));
+                                adGraph.RemoveEdge(incomingEdge);
+                            }
+
+                            // Rmove the edge which is no longer needed
+                            adGraph.RemoveEdge(edge);
+
+                            // Now remove the vertex which was merged
+                            adGraph.RemoveVertex(edge.Source);
+                        }
+                    }
+                    else
+                    {
+                        IEnumerable<ADEdge<ADVertex>> allOutgoing;
+                        if (!adGraph.TryGetOutEdges(edge.Target, out allOutgoing))
+                        {
+                            allOutgoing = new List<ADEdge<ADVertex>>();
+                        }
+
+                        bool abortMerge = false;
+
+                        // Sanity check - don't make parallel edges (can have better huristic for this?)
+                        foreach (var incomingEdge in allOutgoing.ToList())
+                        {
+                            ADEdge<ADVertex> dummy;
+                            if (adGraph.TryGetEdge(edge.Source, incomingEdge.Target, out dummy))
+                            {
+                                abortMerge = true;
+                            }
+                        }
+
+                        if (!abortMerge)
+                        {
+                            // Add the edges with the new source vertex
+                            // And remove the old edges
+                            foreach (var outgoingEdge in allOutgoing.ToList())
+                            {
+                                adGraph.AddEdge(new ADEdge<ADVertex>(edge.Source, outgoingEdge.Target, outgoingEdge.ActivityId));
+                                adGraph.RemoveEdge(outgoingEdge);
+                            }
+
+                            // Rmove the edge which is no longer needed
+                            adGraph.RemoveEdge(edge);
+
+                            // Now remove the vertex which was merged
+                            adGraph.RemoveVertex(edge.Target);
                         }
                     }
                 }
