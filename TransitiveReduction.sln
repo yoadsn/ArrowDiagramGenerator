@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransitiveReduction", "Tran
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickGraph.TransitiveReduction", "QuickGraph.TransitiveReduction\QuickGraph.TransitiveReduction.csproj", "{C074943F-0CF7-4DFD-B265-42B7F8AAA8F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityArrowDiagramGenerator", "ActivityArrowDiagramGenerator\ActivityArrowDiagramGenerator.csproj", "{F33C3A11-EFA6-4DD3-81AC-FE9C93A9C0A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C074943F-0CF7-4DFD-B265-42B7F8AAA8F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C074943F-0CF7-4DFD-B265-42B7F8AAA8F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C074943F-0CF7-4DFD-B265-42B7F8AAA8F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F33C3A11-EFA6-4DD3-81AC-FE9C93A9C0A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F33C3A11-EFA6-4DD3-81AC-FE9C93A9C0A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F33C3A11-EFA6-4DD3-81AC-FE9C93A9C0A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F33C3A11-EFA6-4DD3-81AC-FE9C93A9C0A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
