@@ -1,6 +1,10 @@
 ﻿using GraphVizWrapper;
 using GraphVizWrapper.Commands;
 using GraphVizWrapper.Queries;
+using net.sf.mpxj;
+using net.sf.mpxj.mpp;
+using net.sf.mpxj.MpxjUtilities;
+using net.sf.mpxj.reader;
 using QuickGraph;
 using QuickGraph.Algorithms;
 using QuickGraph.Graphviz;
@@ -24,10 +28,30 @@ namespace TransitiveReduction
         static BidirectionalGraph<int, SEdge<int>> graph;
         static BidirectionalGraph<ADVertex, ADEdge<ADVertex>> adGraph;
 
+        private static void listHierarchy(ProjectFile file)
+        {
+            foreach (net.sf.mpxj.Task task in file.ChildTasks.ToIEnumerable())
+            {
+                System.Console.WriteLine("Task: " + task.Name);
+                listHierarchy(task, " ");
+            }
+
+            System.Console.WriteLine();
+        }
+
+        private static void listHierarchy(net.sf.mpxj.Task task, String indent)
+        {
+            foreach (net.sf.mpxj.Task child in task.ChildTasks.ToIEnumerable())
+            {
+                System.Console.WriteLine(indent + "Task: " + child.Name);
+                listHierarchy(child, indent + " ");
+            }
+        }
+
         static void Main(string[] args)
         {
-            
-
+            #region Debug Data
+            /*
             var edges = new SEdge<int>[] {
                 new SEdge<int>(1 ,2),
                 new SEdge<int>(2 ,3),
@@ -70,6 +94,28 @@ namespace TransitiveReduction
                 new SEdge<int>(19 ,21),
                 new SEdge<int>(20 ,21)
             };
+
+            graph = edges.ToBidirectionalGraph<int, SEdge<int>>();
+            */
+            #endregion
+
+            ProjectReader reader = ProjectReaderUtility.getProjectReader("example3.mpp");
+            ProjectFile mpx = reader.read("example3.mpp");
+
+            var edges = new List<SEdge<int>>();
+            foreach (net.sf.mpxj.Task task in mpx.AllTasks.ToIEnumerable())
+            {
+                var id = task.ID.intValue();
+                var preds = task.Predecessors;
+                if (preds != null && !preds.isEmpty())
+                {
+                    foreach (Relation pred in preds.ToIEnumerable())
+                    {
+                        var edge = new SEdge<int>(pred.TargetTask.ID.intValue(), pred.SourceTask.ID.intValue());
+                        edges.Add(edge);
+                    }
+                }
+            }
 
             graph = edges.ToBidirectionalGraph<int, SEdge<int>>();
 
@@ -121,7 +167,7 @@ namespace TransitiveReduction
             }
             else if (step == 1)
             {
-                var algo = new TransitiveClosureAlgorithm(graph);
+                var algo = new TransitiveReductionAlgorithm<int, SEdge<int>>(graph);
                 algo.Compute();
                 graph = algo.TransitiveClosure;
 

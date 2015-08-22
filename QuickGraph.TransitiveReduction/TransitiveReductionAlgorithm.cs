@@ -1,4 +1,10 @@
-﻿namespace QuickGraph.Algorithms
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace QuickGraph.Algorithms
 {
     using QuickGraph.Algorithms.Observers;
     using QuickGraph.Algorithms.Search;
@@ -8,19 +14,19 @@
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
-    public class TransitiveClosureAlgorithm : AlgorithmBase<BidirectionalGraph<int, SEdge<int>>>
+    public class TransitiveReductionAlgorithm<TVertex, Edge> : AlgorithmBase<BidirectionalGraph<TVertex, Edge>> where Edge : IEdge<TVertex>
     {
-        private BidirectionalGraph<int, SEdge<int>> transitiveClosure;
+        private BidirectionalGraph<TVertex, Edge> transitiveClosure;
 
-        public TransitiveClosureAlgorithm(
-            BidirectionalGraph<int, SEdge<int>> visitedGraph
+        public TransitiveReductionAlgorithm(
+            BidirectionalGraph<TVertex, Edge> visitedGraph
             )
             : base(visitedGraph)
         {
-            transitiveClosure = new BidirectionalGraph<int, SEdge<int>>();
+            transitiveClosure = new BidirectionalGraph<TVertex, Edge>();
         }
 
-        public BidirectionalGraph<int, SEdge<int>> TransitiveClosure
+        public BidirectionalGraph<TVertex, Edge> TransitiveClosure
         {
             get
             {
@@ -33,17 +39,15 @@
             // Clone the visited graph
             transitiveClosure.AddVerticesAndEdgeRange(this.VisitedGraph.Edges);
 
-            // Get the topological order
-            var topoSort = new TopologicalSortAlgorithm<int, SEdge<int>>(this.VisitedGraph);
-            topoSort.Compute();
-            var sortedVertices = topoSort.SortedVertices;
+            // Get the topological sorted graph
+            var topoSort = this.VisitedGraph.TopologicalSort();
 
-            // Iterate in topo order, track indirect ancestors and remove edges from them
-            var ancestorsOfVertices = new Dictionary<int, HashSet<int>>();
-            foreach (var vertexId in sortedVertices)
+            // Iterate in topo order, track indirect ancestors and remove edges from them to the visited vertex
+            var ancestorsOfVertices = new Dictionary<TVertex, HashSet<TVertex>>();
+            foreach (var vertexId in this.VisitedGraph.TopologicalSort())
             {
-                var thisVertexPredecessors = new List<int>();
-                var thisVertexAncestors = new HashSet<int>();
+                var thisVertexPredecessors = new List<TVertex>();
+                var thisVertexAncestors = new HashSet<TVertex>();
                 ancestorsOfVertices[vertexId] = thisVertexAncestors;
 
                 // Get indirect ancestors
@@ -62,7 +66,7 @@
                 // Remove indirect edges
                 foreach (var indirectAncestor in thisVertexAncestors)
                 {
-                    SEdge<int> foundIndirectEdge;
+                    Edge foundIndirectEdge;
                     if (transitiveClosure.TryGetEdge(indirectAncestor, vertexId, out foundIndirectEdge))
                     {
                         transitiveClosure.RemoveEdge(foundIndirectEdge);
