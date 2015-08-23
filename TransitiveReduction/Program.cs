@@ -169,7 +169,7 @@ namespace TransitiveReduction
             {
                 var algo = new TransitiveReductionAlgorithm<int, SEdge<int>>(graph);
                 algo.Compute();
-                graph = algo.TransitiveClosure;
+                graph = algo.TransitiveReduction;
 
                 //var serialzier = new GraphMLSerializer<int, SEdge<int>, BidirectionalGraph<int, SEdge<int>>>();
                 //using (var xwriter = XmlWriter.Create("out.graphml"))

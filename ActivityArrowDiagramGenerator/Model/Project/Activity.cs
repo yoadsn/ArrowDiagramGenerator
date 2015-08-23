@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ActivityArrowDiagramGenerator.Model.Project
 {
-    class Activity
+    public class Activity
     {
+        public int Id { get; set; }
     }
 }

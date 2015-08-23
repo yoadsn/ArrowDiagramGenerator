@@ -16,28 +16,28 @@ namespace QuickGraph.Algorithms
 
     public class TransitiveReductionAlgorithm<TVertex, Edge> : AlgorithmBase<BidirectionalGraph<TVertex, Edge>> where Edge : IEdge<TVertex>
     {
-        private BidirectionalGraph<TVertex, Edge> transitiveClosure;
+        private BidirectionalGraph<TVertex, Edge> transitiveReduction;
 
         public TransitiveReductionAlgorithm(
             BidirectionalGraph<TVertex, Edge> visitedGraph
             )
             : base(visitedGraph)
         {
-            transitiveClosure = new BidirectionalGraph<TVertex, Edge>();
+            transitiveReduction = new BidirectionalGraph<TVertex, Edge>();
         }
 
-        public BidirectionalGraph<TVertex, Edge> TransitiveClosure
+        public BidirectionalGraph<TVertex, Edge> TransitiveReduction
         {
             get
             {
-                return transitiveClosure;
+                return transitiveReduction;
             }
         }
 
         protected override void InternalCompute()
         {
             // Clone the visited graph
-            transitiveClosure.AddVerticesAndEdgeRange(this.VisitedGraph.Edges);
+            transitiveReduction.AddVerticesAndEdgeRange(this.VisitedGraph.Edges);
 
             // Get the topological sorted graph
             var topoSort = this.VisitedGraph.TopologicalSort();
@@ -67,9 +67,9 @@ namespace QuickGraph.Algorithms
                 foreach (var indirectAncestor in thisVertexAncestors)
                 {
                     Edge foundIndirectEdge;
-                    if (transitiveClosure.TryGetEdge(indirectAncestor, vertexId, out foundIndirectEdge))
+                    if (transitiveReduction.TryGetEdge(indirectAncestor, vertexId, out foundIndirectEdge))
                     {
-                        transitiveClosure.RemoveEdge(foundIndirectEdge);
+                        transitiveReduction.RemoveEdge(foundIndirectEdge);
                     }
                 }
 

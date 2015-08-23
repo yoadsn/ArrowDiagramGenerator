@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace ActivityArrowDiagramGenerator.Model.Project
 {
-    class ActivityDependency
+    public class ActivityDependency
     {
+        public Activity Activity { get; set; }
+        public Activity DependsOnActivity { get; set; }
     }
 }
