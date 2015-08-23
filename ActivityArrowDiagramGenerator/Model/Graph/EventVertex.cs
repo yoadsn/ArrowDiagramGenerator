@@ -10,16 +10,24 @@ namespace ActivityArrowDiagramGenerator.Model.Graph
     {
         public readonly string Id;
         public readonly EventVertexType Type = EventVertexType.Normal;
-        public readonly int? MilestoneActivityId = null;
+        public readonly Activity MilestoneActivity = null;
 
         private EventVertex(string id, EventVertexType vertexType)
         {
             Id = id;
         }
 
-        private EventVertex(string id, int milestoneActivityId) : this(id, EventVertexType.Milestone)
+        private EventVertex(string id, Activity milestoneActivity) : this(id, EventVertexType.Milestone)
         {
-            this.MilestoneActivityId = milestoneActivityId;
+            this.MilestoneActivity = milestoneActivity;
+        }
+
+        public bool IsMilestone
+        {
+            get
+            {
+                return MilestoneActivity != null;
+            }
         }
 
         public override bool Equals(Object obj)
@@ -40,9 +48,9 @@ namespace ActivityArrowDiagramGenerator.Model.Graph
         }
 
         #region Factory Methods
-        public static EventVertex CreateMilestone(string id, int milestoneActivityId)
+        public static EventVertex CreateMilestone(string id, Activity milestoneActivity)
         {
-            return new EventVertex(id, milestoneActivityId);
+            return new EventVertex(id, milestoneActivity);
         }
 
         public static EventVertex CreateGraphStart(string id)

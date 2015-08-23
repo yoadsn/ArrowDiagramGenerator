@@ -1,6 +1,6 @@
-﻿using ActivityArrowDiagramGenerator.Model.Graph;
+﻿using ActivityArrowDiagramGenerator.Model;
+using ActivityArrowDiagramGenerator.Model.Graph;
 using ActivityArrowDiagramGenerator.Model.Graph.Internal;
-using ActivityArrowDiagramGenerator.Model.Project;
 using QuickGraph;
 using QuickGraph.Algorithms;
 using System;
@@ -13,26 +13,34 @@ namespace ActivityArrowDiagramGenerator
 {
     public class ActivityArrowDiagramGenerator
     {
-        public ActivityArrowGraph GenerateGraph(ActivityProject project)
+        private IEnumerable<ActivityDependency> activityDependencies;
+        private Dictionary<int, Activity> activitiesDictionary;
+
+        public ActivityArrowDiagramGenerator(IEnumerable<ActivityDependency> activityDependencies)
+	    {
+            this.activityDependencies = activityDependencies;
+            this.activitiesDictionary = this.activityDependencies.ToDictionary(dep => dep.Activity.Id, dep => dep.Activity);
+	    }
+
+        public ActivityArrowGraph GenerateGraph()
         {
-            var nodeGraph = CreateActivityNodeGraphFromProject(project);
+            var nodeGraph = CreateActivityNodeGraphFromProject();
             var reduction = nodeGraph.ComputeTransitiveReduction();
             var activityArrowDiagram = GenerateADGraph(reduction);
             RedirectADGraph(activityArrowDiagram);
             MergeADGraph(activityArrowDiagram);
-            return CreateActivityArrowGraph(activityArrowDiagram, project);
+            return CreateActivityArrowGraph(activityArrowDiagram);
         }
 
-        private BidirectionalGraph<int, SEdge<int>> CreateActivityNodeGraphFromProject(ActivityProject project)
+        private BidirectionalGraph<int, SEdge<int>> CreateActivityNodeGraphFromProject()
         {
-            return 
-                project.ActivityDependencies.
-                Select(
-                    dep => new SEdge<int>(
-                        dep.DependsOnActivity.Id, // Source
-                        dep.Activity.Id // Target
-                        )).
-                ToBidirectionalGraph<int, SEdge<int>>();
+            return activityDependencies.
+                SelectMany(act =>
+                    act.Predecessors.Select(pred =>
+                        new SEdge<int>(
+                            pred, // Source
+                            act.Activity.Id // Target
+                            ))).ToBidirectionalGraph<int, SEdge<int>>();
         }
 
         private static BidirectionalGraph<ADVertex, ADEdge<ADVertex>> GenerateADGraph(BidirectionalGraph<int, SEdge<int>> nodeGraph)
@@ -225,24 +233,70 @@ namespace ActivityArrowDiagramGenerator
             }
         }
 
-        private ActivityArrowGraph CreateActivityArrowGraph(BidirectionalGraph<ADVertex, ADEdge<ADVertex>> graph, ActivityProject project)
+        private ActivityArrowGraph CreateActivityArrowGraph(BidirectionalGraph<ADVertex, ADEdge<ADVertex>> graph)
         {
             var activityArrowGraph = new ActivityArrowGraph();
 
             foreach (var edge in graph.Edges)
             {
-                var sourceVertex = EventVertex.Create(edge.Source.Id);
-                var targetVertex = EventVertex.Create(edge.Target.Id);
+                var sourceVertex = CreateVertexEvent(edge.Source);
+                var targetVertex = CreateVertexEvent(edge.Target);
 
-                activityArrowGraph.AddEventVertex(sourceVertex);
-                activityArrowGraph.AddEventVertex(targetVertex);
+                Activity edgeActivity;
 
-                var activityEdge = new ActivityEdge(sourceVertex, targetVertex, edge.ActivityId, null);
+                ActivityEdge activityEdge;
+                if (TryGetActivity(edge, out edgeActivity))
+                {
+                    activityEdge = new ActivityEdge(sourceVertex, targetVertex, edgeActivity);
+                }
+                else
+                {
+                    activityEdge = new ActivityEdge(sourceVertex, targetVertex);
+                }
 
-                activityArrowGraph.AddActivityEdge(activityEdge);
+                activityArrowGraph.AddEdge(activityEdge);
             }
 
             return activityArrowGraph;
+        }
+
+        private EventVertex CreateVertexEvent(ADVertex vertex)
+        {
+            Activity activity;
+            EventVertex eventVertex;
+            if (vertex.Type == ActivityVertexType.Milestone && TryGetActivity(vertex, out activity))
+            {
+                eventVertex = EventVertex.CreateMilestone(vertex.Id, activity);
+            }
+            else
+            {
+                eventVertex = EventVertex.Create(vertex.Id);
+            }
+            return eventVertex;
+        }
+
+        private bool TryGetActivity(ADEdge<ADVertex> edge, out Activity activity)
+        {
+            activity = null;
+            if (edge.ActivityId.HasValue && activitiesDictionary.ContainsKey(edge.ActivityId.Value))
+            {
+                activity = activitiesDictionary[edge.ActivityId.Value];
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TryGetActivity(ADVertex vertex, out Activity activity)
+        {
+            activity = null;
+            if (vertex.ActivityId.HasValue && activitiesDictionary.ContainsKey(vertex.ActivityId.Value))
+            {
+                activity = activitiesDictionary[vertex.ActivityId.Value];
+                return true;
+            }
+
+            return false;
         }
     }
 }

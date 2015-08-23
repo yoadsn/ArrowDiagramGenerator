@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ActivityArrowDiagramGenerator.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,17 @@ namespace ActivityArrowDiagramGenerator.Model.Graph
 {
     public class ActivityEdge
     {
-        public EventVertex Source { get; private set; }
-        public EventVertex Target { get; private set; }
+        public readonly EventVertex Source;
+        public readonly EventVertex Target;
+        public readonly Activity Activity;
 
-        public ActivityEdge(EventVertex source, EventVertex target, int? activityId, Dictionary<string, string> attributes)
+        public ActivityEdge(EventVertex source, EventVertex target) : this (source, target, null) {}
+
+        public ActivityEdge(EventVertex source, EventVertex target, Activity activity)
         {
-
+            this.Source = source;
+            this.Target = target;
+            this.Activity = activity;
         }
 
         public override bool Equals(Object obj)

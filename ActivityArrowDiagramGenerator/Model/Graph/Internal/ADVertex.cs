@@ -108,6 +108,7 @@ namespace ActivityArrowDiagramGenerator.Model.Graph.Internal
         ActivityStart,
         ActivityEnd,
         GraphStart,
-        GraphEnd
+        GraphEnd,
+        Milestone
     }
 }

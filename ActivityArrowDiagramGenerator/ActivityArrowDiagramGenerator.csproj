@@ -56,14 +56,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActivityArrowDiagramGenerator.cs" />
+    <Compile Include="Model\ActivityDependency.cs" />
     <Compile Include="Model\Graph\ActivityEdge.cs" />
     <Compile Include="Model\Graph\ActivityArrowGraph.cs" />
     <Compile Include="Model\Graph\EventVertex.cs" />
     <Compile Include="Model\Graph\Internal\ADEdge.cs" />
     <Compile Include="Model\Graph\Internal\ADVertex.cs" />
-    <Compile Include="Model\Project\Activity.cs" />
-    <Compile Include="Model\Project\ActivityDependency.cs" />
-    <Compile Include="Model\Project\ActivityProject.cs" />
+    <Compile Include="Model\Activity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
