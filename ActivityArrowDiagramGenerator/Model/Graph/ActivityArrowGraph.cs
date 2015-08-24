@@ -9,6 +9,13 @@ namespace ActivityArrowDiagramGenerator.Model.Graph
     public class ActivityArrowGraph
     {
         private readonly Dictionary<ActivityEdge, ActivityEdge> edges;
+        private readonly HashSet<EventVertex> vertice;
+
+        public ActivityArrowGraph()
+        {
+            edges = new Dictionary<ActivityEdge, ActivityEdge>();
+            vertice = new HashSet<EventVertex>();
+        }
 
         public int EdgeCount
         {
@@ -35,7 +42,10 @@ namespace ActivityArrowDiagramGenerator.Model.Graph
         {
             if (this.ContainsEdge(edge))
                 return false;
+            
             this.edges.Add(edge, edge);
+            this.vertice.Add(edge.Source);
+            this.vertice.Add(edge.Target);
             return true;
         }
 
@@ -60,7 +70,24 @@ namespace ActivityArrowDiagramGenerator.Model.Graph
 
         public void Clear()
         {
-            this.edges.Clear();   
+            this.edges.Clear();
+            this.vertice.Clear();
+        }
+
+        public IEnumerable<EventVertex> Vertices
+        {
+            get
+            {
+                return this.vertice;
+            }
+        }
+
+        public int VertexCount
+        {
+            get
+            {
+                return this.vertice.Count;
+            }
         }
     }
 }

@@ -11,16 +11,16 @@ using System.Threading.Tasks;
 
 namespace ActivityArrowDiagramGenerator
 {
-    public class ActivityArrowDiagramGenerator
+    public class ActivityArrowGraphGenerator
     {
         private IEnumerable<ActivityDependency> activityDependencies;
         private Dictionary<int, Activity> activitiesDictionary;
 
-        public ActivityArrowDiagramGenerator(IEnumerable<ActivityDependency> activityDependencies)
-	    {
+        public ActivityArrowGraphGenerator(IEnumerable<ActivityDependency> activityDependencies)
+        {
             this.activityDependencies = activityDependencies;
             this.activitiesDictionary = this.activityDependencies.ToDictionary(dep => dep.Activity.Id, dep => dep.Activity);
-	    }
+        }
 
         public ActivityArrowGraph GenerateGraph()
         {
@@ -244,17 +244,14 @@ namespace ActivityArrowDiagramGenerator
 
                 Activity edgeActivity;
 
-                ActivityEdge activityEdge;
                 if (TryGetActivity(edge, out edgeActivity))
                 {
-                    activityEdge = new ActivityEdge(sourceVertex, targetVertex, edgeActivity);
+                    activityArrowGraph.AddEdge(new ActivityEdge(sourceVertex, targetVertex, edgeActivity));
                 }
                 else
                 {
-                    activityEdge = new ActivityEdge(sourceVertex, targetVertex);
+                    activityArrowGraph.AddEdge(new ActivityEdge(sourceVertex, targetVertex));
                 }
-
-                activityArrowGraph.AddEdge(activityEdge);
             }
 
             return activityArrowGraph;

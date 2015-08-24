@@ -1,4 +1,6 @@
-﻿using GraphVizWrapper;
+﻿using ActivityArrowDiagramGenerator;
+using ActivityArrowDiagramGenerator.Model;
+using GraphVizWrapper;
 using GraphVizWrapper.Commands;
 using GraphVizWrapper.Queries;
 using net.sf.mpxj;
@@ -51,7 +53,6 @@ namespace TransitiveReduction
         static void Main(string[] args)
         {
             #region Debug Data
-            /*
             var edges = new SEdge<int>[] {
                 new SEdge<int>(1 ,2),
                 new SEdge<int>(2 ,3),
@@ -96,9 +97,9 @@ namespace TransitiveReduction
             };
 
             graph = edges.ToBidirectionalGraph<int, SEdge<int>>();
-            */
             #endregion
 
+            /*
             ProjectReader reader = ProjectReaderUtility.getProjectReader("example3.mpp");
             ProjectFile mpx = reader.read("example3.mpp");
 
@@ -118,17 +119,15 @@ namespace TransitiveReduction
             }
 
             graph = edges.ToBidirectionalGraph<int, SEdge<int>>();
-
-            /*
-            var graph = new BidirectionalGraph<int, SEdge<int>>();
-            var deserializer = new GraphMLDeserializer<int, SEdge<int>, BidirectionalGraph<int, SEdge<int>>>();
-
-            using (var xreader = XmlReader.Create("in.graphml"))
-            {
-                deserializer.Deserialize(xreader, graph, (string i) => Int32.Parse(i), (int s, int t, string id) => new SEdge<int>(s, t));
-            }
             */
 
+
+            var activityDependencies = graph.Vertices.Select(vert => new ActivityDependency(new Activity(vert), graph.InEdges(vert).Select(edge => edge.Source).ToList()));
+            var adgraphgenerator = new ActivityArrowGraphGenerator(activityDependencies);
+            var adgraph = adgraphgenerator.GenerateGraph();
+
+
+            /*
             f = new Form();
             f.Width = 700;
             f.Height = 1024;
@@ -146,6 +145,7 @@ namespace TransitiveReduction
             pb.Click += pb_Click;
 
             Application.Run();
+            */
         }
 
         static int step = 0;

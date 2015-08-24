@@ -55,7 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActivityArrowDiagramGenerator.cs" />
+    <Compile Include="ActivityArrowGraphGenerator.cs" />
     <Compile Include="Model\ActivityDependency.cs" />
     <Compile Include="Model\Graph\ActivityEdge.cs" />
     <Compile Include="Model\Graph\ActivityArrowGraph.cs" />
@@ -73,6 +73,10 @@
       <Project>{c074943f-0cf7-4dfd-b265-42b7f8aaa8f1}</Project>
       <Name>QuickGraph.TransitiveReduction</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Readers\" />
+    <Folder Include="Writers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

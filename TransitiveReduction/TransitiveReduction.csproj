@@ -167,6 +167,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ActivityArrowDiagramGenerator\ActivityArrowDiagramGenerator.csproj">
+      <Project>{f33c3a11-efa6-4dd3-81ac-fe9c93a9c0a3}</Project>
+      <Name>ActivityArrowDiagramGenerator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QuickGraph.TransitiveReduction\QuickGraph.TransitiveReduction.csproj">
       <Project>{c074943f-0cf7-4dfd-b265-42b7f8aaa8f1}</Project>
       <Name>QuickGraph.TransitiveReduction</Name>
