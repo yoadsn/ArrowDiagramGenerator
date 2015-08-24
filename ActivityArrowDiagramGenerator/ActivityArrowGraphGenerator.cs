@@ -1,6 +1,6 @@
 ﻿using ActivityArrowDiagramGenerator.Model;
-using ActivityArrowDiagramGenerator.Model.Graph;
-using ActivityArrowDiagramGenerator.Model.Graph.Internal;
+using ActivityDiagram.Contracts.Model.Activities;
+using ActivityDiagram.Contracts.Model.Graph;
 using QuickGraph;
 using QuickGraph.Algorithms;
 using System;

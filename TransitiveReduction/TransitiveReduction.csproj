@@ -157,8 +157,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ADEdge.cs" />
-    <Compile Include="ADVertex.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -170,6 +168,14 @@
     <ProjectReference Include="..\ActivityArrowDiagramGenerator\ActivityArrowDiagramGenerator.csproj">
       <Project>{f33c3a11-efa6-4dd3-81ac-fe9c93a9c0a3}</Project>
       <Name>ActivityArrowDiagramGenerator</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ActivityDiagram.Contracts\ActivityDiagram.Contracts.csproj">
+      <Project>{f454155a-9f69-4404-9bac-453733d94574}</Project>
+      <Name>ActivityDiagram.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ActivityDiagram.Readers\ActivityDiagram.Readers.csproj">
+      <Project>{23992c6b-78ff-4f1b-ad69-56f275c36834}</Project>
+      <Name>ActivityDiagram.Readers</Name>
     </ProjectReference>
     <ProjectReference Include="..\QuickGraph.TransitiveReduction\QuickGraph.TransitiveReduction.csproj">
       <Project>{c074943f-0cf7-4dfd-b265-42b7f8aaa8f1}</Project>

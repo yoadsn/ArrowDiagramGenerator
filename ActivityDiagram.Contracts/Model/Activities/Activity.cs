@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ActivityArrowDiagramGenerator.Model
+namespace ActivityDiagram.Contracts.Model.Activities
 {
     public class Activity
     {
