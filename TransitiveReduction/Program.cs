@@ -2,6 +2,7 @@
 using ActivityArrowDiagramGenerator.Model;
 using ActivityDiagram.Contracts.Model.Activities;
 using ActivityDiagram.Readers.CSV;
+using ActivityDiagram.Writers.Graphml;
 using GraphVizWrapper;
 using GraphVizWrapper.Commands;
 using GraphVizWrapper.Queries;
@@ -123,12 +124,17 @@ namespace TransitiveReduction
             graph = edges.ToBidirectionalGraph<int, SEdge<int>>();
             */
 
+            
+
             var csvReader = new CSVActivitiesReader("example.csv");
             var deps = csvReader.Read().ToList();
 
             //var activityDependencies = graph.Vertices.Select(vert => new ActivityDependency(new Activity(vert), graph.InEdges(vert).Select(edge => edge.Source).ToList()));
             var adgraphgenerator = new ActivityArrowGraphGenerator(deps);
             var adgraph = adgraphgenerator.GenerateGraph();
+
+            var gwriter = new GraphmlArrowGraphWriter("example1.graphml");
+            gwriter.Write(adgraph);
 
             /*
             f = new Form();

@@ -177,6 +177,10 @@
       <Project>{23992c6b-78ff-4f1b-ad69-56f275c36834}</Project>
       <Name>ActivityDiagram.Readers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ActivityDiagram.Writers\ActivityDiagram.Writers.csproj">
+      <Project>{84516c22-73c9-44b8-94ce-d83cdb589f9a}</Project>
+      <Name>ActivityDiagram.Writers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QuickGraph.TransitiveReduction\QuickGraph.TransitiveReduction.csproj">
       <Project>{c074943f-0cf7-4dfd-b265-42b7f8aaa8f1}</Project>
       <Name>QuickGraph.TransitiveReduction</Name>

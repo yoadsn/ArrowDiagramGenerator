@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityDiagram.Contracts",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityDiagram.Readers", "ActivityDiagram.Readers\ActivityDiagram.Readers.csproj", "{23992C6B-78FF-4F1B-AD69-56F275C36834}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityDiagram.Writers", "ActivityDiagram.Writers\ActivityDiagram.Writers.csproj", "{84516C22-73C9-44B8-94CE-D83CDB589F9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{23992C6B-78FF-4F1B-AD69-56F275C36834}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23992C6B-78FF-4F1B-AD69-56F275C36834}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23992C6B-78FF-4F1B-AD69-56F275C36834}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84516C22-73C9-44B8-94CE-D83CDB589F9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84516C22-73C9-44B8-94CE-D83CDB589F9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84516C22-73C9-44B8-94CE-D83CDB589F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84516C22-73C9-44B8-94CE-D83CDB589F9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

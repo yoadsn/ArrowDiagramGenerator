@@ -9,14 +9,16 @@ namespace ActivityDiagram.Contracts.Model.Graph
 {
     public class ActivityEdge
     {
+        public readonly int Id;
         public readonly EventVertex Source;
         public readonly EventVertex Target;
         public readonly Activity Activity;
 
-        public ActivityEdge(EventVertex source, EventVertex target) : this (source, target, null) {}
+        public ActivityEdge(int id, EventVertex source, EventVertex target) : this (id, source, target, null) {}
 
-        public ActivityEdge(EventVertex source, EventVertex target, Activity activity)
+        public ActivityEdge(int id, EventVertex source, EventVertex target, Activity activity)
         {
+            this.Id = id;
             this.Source = source;
             this.Target = target;
             this.Activity = activity;
@@ -28,11 +30,11 @@ namespace ActivityDiagram.Contracts.Model.Graph
         }
         public override int GetHashCode()
         {
-            return Source.GetHashCode() ^ Target.GetHashCode();
+            return Id.GetHashCode();
         }
         public static bool operator ==(ActivityEdge x, ActivityEdge y)
         {
-            return x.Source == y.Source && x.Target == y.Target;
+            return x.Id == y.Id;
         }
         public static bool operator !=(ActivityEdge x, ActivityEdge y)
         {

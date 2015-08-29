@@ -9,16 +9,16 @@ namespace ActivityDiagram.Contracts.Model.Graph
 {
     public class EventVertex
     {
-        public readonly string Id;
+        public readonly int Id;
         public readonly EventVertexType Type = EventVertexType.Normal;
         public readonly Activity MilestoneActivity = null;
 
-        private EventVertex(string id, EventVertexType vertexType)
+        private EventVertex(int id, EventVertexType vertexType)
         {
             Id = id;
         }
 
-        private EventVertex(string id, Activity milestoneActivity) : this(id, EventVertexType.Milestone)
+        private EventVertex(int id, Activity milestoneActivity) : this(id, EventVertexType.Milestone)
         {
             this.MilestoneActivity = milestoneActivity;
         }
@@ -49,22 +49,22 @@ namespace ActivityDiagram.Contracts.Model.Graph
         }
 
         #region Factory Methods
-        public static EventVertex CreateMilestone(string id, Activity milestoneActivity)
+        public static EventVertex CreateMilestone(int id, Activity milestoneActivity)
         {
             return new EventVertex(id, milestoneActivity);
         }
 
-        public static EventVertex CreateGraphStart(string id)
+        public static EventVertex CreateGraphStart(int id)
         {
             return new EventVertex(id, EventVertexType.GraphStart);
         }
 
-        public static EventVertex CreateGraphEnd(string id)
+        public static EventVertex CreateGraphEnd(int id)
         {
             return new EventVertex(id, EventVertexType.GraphEnd);
         }
 
-        public static EventVertex Create(string id)
+        public static EventVertex Create(int id)
         {
             return new EventVertex(id, EventVertexType.Normal);
         }

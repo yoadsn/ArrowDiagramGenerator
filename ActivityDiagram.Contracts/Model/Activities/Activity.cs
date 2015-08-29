@@ -25,6 +25,17 @@ namespace ActivityDiagram.Contracts.Model.Activities
         }
         public static bool operator ==(Activity x, Activity y)
         {
+            if (System.Object.ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            // If one is null, but not both, return false.
+            if (((object)x == null) || ((object)y == null))
+            {
+                return false;
+            }
+
             return x.Id == y.Id;
         }
         public static bool operator !=(Activity x, Activity y)

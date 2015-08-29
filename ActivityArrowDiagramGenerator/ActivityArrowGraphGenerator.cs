@@ -235,39 +235,66 @@ namespace ActivityArrowDiagramGenerator
 
         private ActivityArrowGraph CreateActivityArrowGraph(BidirectionalGraph<ADVertex, ADEdge<ADVertex>> graph)
         {
+            var edgesNextId = 0;
+            var edgesIdsMap = new Dictionary<Tuple<int, int>, int>();
+            var verticeNextId = 0;
+            var verticeIdsMap = new Dictionary<string, int>();
+
             var activityArrowGraph = new ActivityArrowGraph();
 
             foreach (var edge in graph.Edges)
             {
-                var sourceVertex = CreateVertexEvent(edge.Source);
-                var targetVertex = CreateVertexEvent(edge.Target);
+                var sourceVertex = CreateVertexEvent(edge.Source, ref verticeNextId, verticeIdsMap);
+                var targetVertex = CreateVertexEvent(edge.Target, ref verticeNextId, verticeIdsMap);
 
                 Activity edgeActivity;
 
-                if (TryGetActivity(edge, out edgeActivity))
-                {
-                    activityArrowGraph.AddEdge(new ActivityEdge(sourceVertex, targetVertex, edgeActivity));
-                }
-                else
-                {
-                    activityArrowGraph.AddEdge(new ActivityEdge(sourceVertex, targetVertex));
-                }
+                TryGetActivity(edge, out edgeActivity);
+
+                activityArrowGraph.AddEdge(CreateActivityEdge(sourceVertex, targetVertex, edgeActivity, ref edgesNextId, edgesIdsMap));
             }
 
             return activityArrowGraph;
         }
 
-        private EventVertex CreateVertexEvent(ADVertex vertex)
+        private ActivityEdge CreateActivityEdge(EventVertex source, EventVertex target, Activity edgeActivity, ref int edgesNextId, Dictionary<Tuple<int, int>, int> edgesIdsMap)
         {
+            var edgeUniqueKey = new Tuple<int, int>(source.Id, target.Id);
+            int activityEdgeId;
+            if (!edgesIdsMap.TryGetValue(edgeUniqueKey, out activityEdgeId))
+            {
+                edgesIdsMap[edgeUniqueKey] = activityEdgeId = edgesNextId;
+                edgesNextId++;
+            }
+
+            if (edgeActivity != null)
+            {
+                return new ActivityEdge(activityEdgeId, source, target, edgeActivity);
+            }
+            else
+            {
+                return new ActivityEdge(activityEdgeId, source, target);
+            }
+        }
+
+        private EventVertex CreateVertexEvent(ADVertex vertex, ref int verticeNextId, Dictionary<string, int>  verticeIdsMap)
+        {
+            int eventVertexId;
+            if (!verticeIdsMap.TryGetValue(vertex.Id, out eventVertexId))
+            {
+                verticeIdsMap[vertex.Id] = eventVertexId = verticeNextId;
+                verticeNextId++;
+            }
+
             Activity activity;
             EventVertex eventVertex;
             if (vertex.Type == ActivityVertexType.Milestone && TryGetActivity(vertex, out activity))
             {
-                eventVertex = EventVertex.CreateMilestone(vertex.Id, activity);
+                eventVertex = EventVertex.CreateMilestone(eventVertexId, activity);
             }
             else
             {
-                eventVertex = EventVertex.Create(vertex.Id);
+                eventVertex = EventVertex.Create(eventVertexId);
             }
             return eventVertex;
         }
