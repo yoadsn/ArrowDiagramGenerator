@@ -10,6 +10,8 @@ namespace ActivityDiagram.Readers.CSV.Model
     {
         public int ActivityId { get; set; }
         public List<int> Predecessors { get; set; }
+        public int? ActivityDuration { get; set; }
+        public int? ActivityTotalSlack { get; set; }
 
         public ActivityRow()
         {

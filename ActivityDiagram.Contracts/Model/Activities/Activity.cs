@@ -9,8 +9,17 @@ namespace ActivityDiagram.Contracts.Model.Activities
     public class Activity
     {
         public readonly int Id;
+        public readonly int? Duration;
+        public readonly int? TotalSlack;
         
-        public Activity(int id)
+        public Activity(int id):
+            this(id, null, null)
+
+        {
+
+        }
+
+        public Activity(int id, int? Duration, int? TotalSlack)
         {
             this.Id = id;
         }

@@ -31,7 +31,7 @@ namespace ActivityDiagram.Readers.CSV
 
             return rows.Select(actrow =>
                 new ActivityDependency(
-                    new Activity(actrow.ActivityId),
+                    new Activity(actrow.ActivityId, actrow.ActivityDuration, actrow.ActivityTotalSlack),
                     actrow.Predecessors));
         }
 
@@ -48,18 +48,61 @@ namespace ActivityDiagram.Readers.CSV
     {
         public ActivityRowMap()
         {
-            Map(m => m.Predecessors).ConvertUsing(ParseIntList);
             Map(m => m.ActivityId).Name("ID");
+            Map(m => m.Predecessors).ConvertUsing(ParsePredecessorsIntList);
+            Map(m => m.ActivityDuration).ConvertUsing(ParseDuration);
+            Map(m => m.ActivityTotalSlack).ConvertUsing(ParseTotalSlack);
         }
 
-        List<int> ParseIntList(ICsvReaderRow row)
+        List<int> ParsePredecessorsIntList(ICsvReaderRow row)
         {
-            var stringList = row.GetField<string>("Predecessors").Trim();
+            return ParseIntList(row, "Predecessors");
+        }
+
+        int? ParseDuration(ICsvReaderRow row)
+        {
+            return ParseSafeIntegerValuesWithSuffix(row, "Duration", "days");
+        }
+
+        int? ParseTotalSlack(ICsvReaderRow row)
+        {
+            return ParseSafeIntegerValuesWithSuffix(row, "Total Slack", "days");
+        }
+
+        List<int> ParseIntList(ICsvReaderRow row, string fieldName)
+        {
+            var stringList = row.GetField<string>(fieldName).Trim();
             if (String.IsNullOrEmpty(stringList)) return new List<int>();
 
             return stringList.Split(',')
                 .Select(sId => Int32.Parse(sId))
                 .ToList();
+        }
+
+        int? ParseSafeIntegerValuesWithSuffix(ICsvReaderRow row, string fieldName, string suffix)
+        {
+            var stringValue = row.GetField<string>(fieldName).Trim();
+            if (String.IsNullOrEmpty(stringValue)) return null;
+
+            try
+            {
+                var startIndexOfSuffix = stringValue.ToLowerInvariant().IndexOf(suffix);
+                if (startIndexOfSuffix > 0)
+                {
+                    stringValue = stringValue.Substring(0, startIndexOfSuffix).Trim();
+                }
+            }
+            catch { }
+
+            int integerValue;
+            if (Int32.TryParse(stringValue, out integerValue))
+            {
+                return integerValue;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
