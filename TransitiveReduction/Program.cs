@@ -3,6 +3,7 @@ using ActivityArrowDiagramGenerator.Model;
 using ActivityDiagram.Contracts.Model.Activities;
 using ActivityDiagram.Readers.CSV;
 using ActivityDiagram.Writers.Graphml;
+using ActivityDiagram.Writers.Graphviz;
 using GraphVizWrapper;
 using GraphVizWrapper.Commands;
 using GraphVizWrapper.Queries;
@@ -135,6 +136,9 @@ namespace TransitiveReduction
 
             var gwriter = new GraphmlArrowGraphWriter("example1.graphml");
             gwriter.Write(adgraph);
+
+            var gvwriter = new GraphvizArrowGraphWriter("example1.dot");
+            gvwriter.Write(adgraph);
 
             /*
             f = new Form();

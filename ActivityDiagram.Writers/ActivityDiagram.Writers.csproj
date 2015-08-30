@@ -46,6 +46,7 @@
     <Compile Include="Graphml\Model\GraphmlNodeBuilder.cs" />
     <Compile Include="Graphml\Model\GraphmlNodeType.cs" />
     <Compile Include="Graphml\Model\GraphmlSchemaClass.cs" />
+    <Compile Include="Graphviz\GraphvizArrowGraphWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
