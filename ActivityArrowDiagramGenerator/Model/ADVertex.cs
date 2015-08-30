@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,13 @@ namespace ActivityArrowDiagramGenerator.Model
     {
         private readonly int? activityId;
         private readonly ActivityVertexType type;
+        private readonly bool critical;
 
-        public ADVertex(int? activityId, ActivityVertexType type)
+        public ADVertex(int? activityId, ActivityVertexType type, bool critical)
         {
             this.activityId = activityId;
             this.type = type;
+            this.critical = critical;
         }
 
         public string Id
@@ -38,6 +41,14 @@ namespace ActivityArrowDiagramGenerator.Model
             get
             {
                 return this.type;
+            }
+        }
+
+        public bool IsCritical
+        {
+            get
+            {
+                return this.critical;
             }
         }
 
@@ -65,41 +76,25 @@ namespace ActivityArrowDiagramGenerator.Model
 
         private string FormatId()
         {
-            if (this.activityId.HasValue)
+            Debug.Assert(this.activityId.HasValue);
+
+            if (this.type == ActivityVertexType.ActivityStart)
             {
-                if (this.type == ActivityVertexType.ActivityStart)
-                {
-                    return "S" + this.activityId.Value;
-                }
-                else if (this.type == ActivityVertexType.ActivityEnd)
-                {
-                    return "E" + this.activityId.Value;
-                }
-                else
-                {
-                    throw new FormatException("Verex with an activity ID must be the start or end of an activity.");
-                }
+                return "S" + this.activityId.Value;
+            }
+            else if (this.type == ActivityVertexType.ActivityEnd)
+            {
+                return "E" + this.activityId.Value;
             }
             else
             {
-                if (this.type == ActivityVertexType.GraphStart)
-                {
-                    return "START";
-                }
-                else if (this.type == ActivityVertexType.GraphEnd)
-                {
-                    return "END";
-                }
-                else
-                {
-                    throw new FormatException("Verex without an activity ID must be the start or end of a graph.");
-                }
+                throw new FormatException("Verex with an activity ID must be the start or end of an activity.");
             }
         }
 
-        public static ADVertex New(int? activityId, ActivityVertexType type)
+        public static ADVertex New(int? activityId, ActivityVertexType type, bool critical)
         {
-            return new ADVertex(activityId, type);
+            return new ADVertex(activityId, type, critical);
         }
     }
 
@@ -107,8 +102,6 @@ namespace ActivityArrowDiagramGenerator.Model
     {
         ActivityStart,
         ActivityEnd,
-        GraphStart,
-        GraphEnd,
         Milestone
     }
 }

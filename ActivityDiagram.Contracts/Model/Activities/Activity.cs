@@ -19,9 +19,19 @@ namespace ActivityDiagram.Contracts.Model.Activities
 
         }
 
-        public Activity(int id, int? Duration, int? TotalSlack)
+        public Activity(int id, int? duration, int? totalSlack)
         {
             this.Id = id;
+            this.Duration = duration;
+            this.TotalSlack = totalSlack;
+        }
+
+        public bool IsCritical
+        {
+            get
+            {
+                return TotalSlack == 0;
+            }
         }
 
         public override bool Equals(Object obj)

@@ -15,6 +15,10 @@ namespace ActivityArrowDiagramGenerator
     {
         private IEnumerable<ActivityDependency> activityDependencies;
         private Dictionary<int, Activity> activitiesDictionary;
+        private Dictionary<Tuple<int, int>, int> edgesIdsMap;
+        private Dictionary<string, int> verticeIdsMap;
+        int edgesNextId = 0;
+        int verticeNextId = 0;
 
         public ActivityArrowGraphGenerator(IEnumerable<ActivityDependency> activityDependencies)
         {
@@ -24,12 +28,22 @@ namespace ActivityArrowDiagramGenerator
 
         public ActivityArrowGraph GenerateGraph()
         {
+            InitializeInternalStructures();
+
             var nodeGraph = CreateActivityNodeGraphFromProject();
             var reduction = nodeGraph.ComputeTransitiveReduction();
             var activityArrowDiagram = GenerateADGraph(reduction);
             RedirectADGraph(activityArrowDiagram);
             MergeADGraph(activityArrowDiagram);
             return CreateActivityArrowGraph(activityArrowDiagram);
+        }
+
+        private void InitializeInternalStructures()
+        {
+            edgesIdsMap = new Dictionary<Tuple<int, int>, int>();
+            verticeIdsMap = new Dictionary<string, int>();
+            edgesNextId = 0;
+            verticeNextId = 0;
         }
 
         private BidirectionalGraph<int, SEdge<int>> CreateActivityNodeGraphFromProject()
@@ -43,31 +57,36 @@ namespace ActivityArrowDiagramGenerator
                             ))).ToBidirectionalGraph<int, SEdge<int>>();
         }
 
-        private static BidirectionalGraph<ADVertex, ADEdge<ADVertex>> GenerateADGraph(BidirectionalGraph<int, SEdge<int>> nodeGraph)
+        private BidirectionalGraph<ADVertex, ADEdge> GenerateADGraph(BidirectionalGraph<int, SEdge<int>> nodeGraph)
         {
-            var adGraph = new BidirectionalGraph<ADVertex, ADEdge<ADVertex>>();
+            var adGraph = new BidirectionalGraph<ADVertex, ADEdge>();
 
             // Go over all vertice - add them as a new activity edges.
             // activity vertex name are important for resuse when adding the edges.
             foreach (var vertex in nodeGraph.Vertices)
             {
-                var startNode = ADVertex.New(vertex, ActivityVertexType.ActivityStart);
-                var endNode = ADVertex.New(vertex, ActivityVertexType.ActivityEnd);
+                bool isCritical = activitiesDictionary[vertex].IsCritical;
+
+                var startNode = ADVertex.New(vertex, ActivityVertexType.ActivityStart, isCritical);
+                var endNode = ADVertex.New(vertex, ActivityVertexType.ActivityEnd, isCritical);
                 adGraph.AddVertex(startNode);
                 adGraph.AddVertex(endNode);
 
-                ADEdge<ADVertex> activityEdge = new ADEdge<ADVertex>(startNode, endNode, vertex);
+                ADEdge activityEdge = new ADEdge(startNode, endNode, vertex);
 
                 adGraph.AddEdge(activityEdge);
             }
 
-            // Go over all edges - convert them to activity edges.
+            // Go over all edges - convert them to dummy edges.
             // Make sure connections are maintained.
             foreach (var edge in nodeGraph.Edges)
             {
-                ADEdge<ADVertex> activityEdge = new ADEdge<ADVertex>(
-                    ADVertex.New(edge.Source, ActivityVertexType.ActivityEnd),
-                    ADVertex.New(edge.Target, ActivityVertexType.ActivityStart));
+                bool isSourceCritical = activitiesDictionary[edge.Source].IsCritical;
+                bool isTargetCritical = activitiesDictionary[edge.Target].IsCritical;
+
+                ADEdge activityEdge = new ADEdge(
+                    ADVertex.New(edge.Source, ActivityVertexType.ActivityEnd, isSourceCritical),
+                    ADVertex.New(edge.Target, ActivityVertexType.ActivityStart, isTargetCritical));
 
                 adGraph.AddEdge(activityEdge);
             }
@@ -75,7 +94,7 @@ namespace ActivityArrowDiagramGenerator
             return adGraph;
         }
 
-        private static void RedirectADGraph(BidirectionalGraph<ADVertex, ADEdge<ADVertex>> adGraph)
+        private void RedirectADGraph(BidirectionalGraph<ADVertex, ADEdge> adGraph)
         {
             // Go over every vertex
             foreach (var pivotVertex in adGraph.Vertices)
@@ -84,7 +103,7 @@ namespace ActivityArrowDiagramGenerator
                 if (pivotVertex.Type == ActivityVertexType.ActivityEnd)
                 {
                     // Get all the edges going out of this vertex
-                    IEnumerable<ADEdge<ADVertex>> foundOutEdges;
+                    IEnumerable<ADEdge> foundOutEdges;
                     if (adGraph.TryGetOutEdges(pivotVertex, out foundOutEdges))
                     {
                         var commonDependenciesForAllTargets = new HashSet<ADVertex>();
@@ -94,7 +113,7 @@ namespace ActivityArrowDiagramGenerator
                             var target = outEdge.Target;
                             if (target.Type == ActivityVertexType.ActivityStart)
                             {
-                                IEnumerable<ADEdge<ADVertex>> dependenciesOfTarget;
+                                IEnumerable<ADEdge> dependenciesOfTarget;
                                 if (adGraph.TryGetInEdges(target, out dependenciesOfTarget))
                                 {
                                     if (commonDependenciesForAllTargets.Count == 0)
@@ -120,14 +139,13 @@ namespace ActivityArrowDiagramGenerator
                         // Now, if we have some common dependncies of all targets which are not the current vertex - they should be redirected
                         foreach (var commonDependency in commonDependenciesForAllTargets.Where(d => d != pivotVertex))
                         {
-                            IEnumerable<ADEdge<ADVertex>> edgesOutOfDependency;
+                            IEnumerable<ADEdge> edgesOutOfDependency;
                             if (adGraph.TryGetOutEdges(commonDependency, out edgesOutOfDependency))
                             {
                                 var depndents = foundOutEdges.Select(e => e.Target);
 
                                 // This dependency should no longer point at the dependents of this vertex
                                 var edgesToRemove = edgesOutOfDependency.Where(e => depndents.Contains(e.Target)).ToList();
-
                                 foreach (var edgeToRemove in edgesToRemove)
                                 {
                                     adGraph.RemoveEdge(edgeToRemove);
@@ -136,7 +154,7 @@ namespace ActivityArrowDiagramGenerator
                             // Else should never happen
 
                             // This dependency should point at this vertex
-                            var edgeToAdd = new ADEdge<ADVertex>(commonDependency, pivotVertex);
+                            var edgeToAdd = new ADEdge(commonDependency, pivotVertex);
                             adGraph.AddEdge(edgeToAdd);
                         }
                     }
@@ -144,7 +162,7 @@ namespace ActivityArrowDiagramGenerator
             }
         }
 
-        private static void MergeADGraph(BidirectionalGraph<ADVertex, ADEdge<ADVertex>> adGraph)
+        private void MergeADGraph(BidirectionalGraph<ADVertex, ADEdge> adGraph)
         {
             // Go over all non-activity edges - and try to merge them
             var nonActivityEdges = adGraph.Edges.Where(e => !e.ActivityId.HasValue).ToList();
@@ -158,17 +176,17 @@ namespace ActivityArrowDiagramGenerator
                     // Remove the vertex which has no other edges connected to it
                     if (outDegree == 1 && inDegree != 1)
                     {
-                        IEnumerable<ADEdge<ADVertex>> allIncoming;
+                        IEnumerable<ADEdge> allIncoming;
                         if (!adGraph.TryGetInEdges(edge.Source, out allIncoming))
                         {
-                            allIncoming = new List<ADEdge<ADVertex>>();
+                            allIncoming = new List<ADEdge>();
                         }
 
                         bool abortMerge = false;
 
                         // Sanity check - don't make parallel edges (can have better huristic for this?)
                         foreach (var incomingEdge in allIncoming.ToList()) {
-                            ADEdge<ADVertex> dummy;
+                            ADEdge dummy;
                             if (adGraph.TryGetEdge(incomingEdge.Source, edge.Target, out dummy))
                             {
                                 abortMerge = true;
@@ -181,7 +199,7 @@ namespace ActivityArrowDiagramGenerator
                             // And remove the old edges
                             foreach (var incomingEdge in allIncoming.ToList())
                             {
-                                adGraph.AddEdge(new ADEdge<ADVertex>(incomingEdge.Source, edge.Target, incomingEdge.ActivityId));
+                                adGraph.AddEdge(new ADEdge(incomingEdge.Source, edge.Target, incomingEdge.ActivityId, incomingEdge.IsCritical));
                                 adGraph.RemoveEdge(incomingEdge);
                             }
 
@@ -194,10 +212,10 @@ namespace ActivityArrowDiagramGenerator
                     }
                     else
                     {
-                        IEnumerable<ADEdge<ADVertex>> allOutgoing;
+                        IEnumerable<ADEdge> allOutgoing;
                         if (!adGraph.TryGetOutEdges(edge.Target, out allOutgoing))
                         {
-                            allOutgoing = new List<ADEdge<ADVertex>>();
+                            allOutgoing = new List<ADEdge>();
                         }
 
                         bool abortMerge = false;
@@ -205,7 +223,7 @@ namespace ActivityArrowDiagramGenerator
                         // Sanity check - don't make parallel edges (can have better huristic for this?)
                         foreach (var incomingEdge in allOutgoing.ToList())
                         {
-                            ADEdge<ADVertex> dummy;
+                            ADEdge dummy;
                             if (adGraph.TryGetEdge(edge.Source, incomingEdge.Target, out dummy))
                             {
                                 abortMerge = true;
@@ -218,7 +236,7 @@ namespace ActivityArrowDiagramGenerator
                             // And remove the old edges
                             foreach (var outgoingEdge in allOutgoing.ToList())
                             {
-                                adGraph.AddEdge(new ADEdge<ADVertex>(edge.Source, outgoingEdge.Target, outgoingEdge.ActivityId));
+                                adGraph.AddEdge(new ADEdge(edge.Source, outgoingEdge.Target, outgoingEdge.ActivityId, outgoingEdge.IsCritical));
                                 adGraph.RemoveEdge(outgoingEdge);
                             }
 
@@ -233,31 +251,26 @@ namespace ActivityArrowDiagramGenerator
             }
         }
 
-        private ActivityArrowGraph CreateActivityArrowGraph(BidirectionalGraph<ADVertex, ADEdge<ADVertex>> graph)
+        private ActivityArrowGraph CreateActivityArrowGraph(BidirectionalGraph<ADVertex, ADEdge> graph)
         {
-            var edgesNextId = 0;
-            var edgesIdsMap = new Dictionary<Tuple<int, int>, int>();
-            var verticeNextId = 0;
-            var verticeIdsMap = new Dictionary<string, int>();
-
             var activityArrowGraph = new ActivityArrowGraph();
 
             foreach (var edge in graph.Edges)
             {
-                var sourceVertex = CreateVertexEvent(edge.Source, ref verticeNextId, verticeIdsMap);
-                var targetVertex = CreateVertexEvent(edge.Target, ref verticeNextId, verticeIdsMap);
+                var sourceVertex = CreateVertexEvent(edge.Source, graph.InDegree(edge.Source), graph.OutDegree(edge.Source));
+                var targetVertex = CreateVertexEvent(edge.Target, graph.InDegree(edge.Target), graph.OutDegree(edge.Target));
 
                 Activity edgeActivity;
 
                 TryGetActivity(edge, out edgeActivity);
 
-                activityArrowGraph.AddEdge(CreateActivityEdge(sourceVertex, targetVertex, edgeActivity, ref edgesNextId, edgesIdsMap));
+                activityArrowGraph.AddEdge(CreateActivityEdge(sourceVertex, targetVertex, edgeActivity, edge.IsCritical));
             }
 
             return activityArrowGraph;
         }
 
-        private ActivityEdge CreateActivityEdge(EventVertex source, EventVertex target, Activity edgeActivity, ref int edgesNextId, Dictionary<Tuple<int, int>, int> edgesIdsMap)
+        private ActivityEdge CreateActivityEdge(EventVertex source, EventVertex target, Activity edgeActivity, bool isCritical)
         {
             var edgeUniqueKey = new Tuple<int, int>(source.Id, target.Id);
             int activityEdgeId;
@@ -267,17 +280,10 @@ namespace ActivityArrowDiagramGenerator
                 edgesNextId++;
             }
 
-            if (edgeActivity != null)
-            {
-                return new ActivityEdge(activityEdgeId, source, target, edgeActivity);
-            }
-            else
-            {
-                return new ActivityEdge(activityEdgeId, source, target);
-            }
+            return new ActivityEdge(activityEdgeId, source, target, edgeActivity, isCritical);
         }
 
-        private EventVertex CreateVertexEvent(ADVertex vertex, ref int verticeNextId, Dictionary<string, int>  verticeIdsMap)
+        private EventVertex CreateVertexEvent(ADVertex vertex, int inDegree, int outDegree)
         {
             int eventVertexId;
             if (!verticeIdsMap.TryGetValue(vertex.Id, out eventVertexId))
@@ -292,6 +298,14 @@ namespace ActivityArrowDiagramGenerator
             {
                 eventVertex = EventVertex.CreateMilestone(eventVertexId, activity);
             }
+            else if (inDegree == 0)
+            {
+                eventVertex = EventVertex.CreateGraphStart(eventVertexId);
+            }
+            else if (outDegree == 0)
+            {
+                eventVertex = EventVertex.CreateGraphEnd(eventVertexId);
+            }
             else
             {
                 eventVertex = EventVertex.Create(eventVertexId);
@@ -299,7 +313,7 @@ namespace ActivityArrowDiagramGenerator
             return eventVertex;
         }
 
-        private bool TryGetActivity(ADEdge<ADVertex> edge, out Activity activity)
+        private bool TryGetActivity(ADEdge edge, out Activity activity)
         {
             activity = null;
             if (edge.ActivityId.HasValue && activitiesDictionary.ContainsKey(edge.ActivityId.Value))

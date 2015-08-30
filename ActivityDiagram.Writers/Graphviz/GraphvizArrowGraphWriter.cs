@@ -31,7 +31,14 @@ namespace ActivityDiagram.Writers.Graphviz
             {
                 if (edge.Activity != null)
                 {
-                    sb.AppendFormat("{0} -> {1} [ id={2} label={2} ];\n", edge.Source.Id, edge.Target.Id, edge.Activity.Id);
+                    var penWidth = "1";
+                    if (edge.IsCritical)
+                    {
+                        penWidth = "3";
+                    }
+                    
+                    sb.AppendFormat("{0} -> {1} [ id={2} label={2} penwidth=\"{3}\" ];\n", edge.Source.Id, edge.Target.Id, edge.Activity.Id, penWidth);
+                    
                 }
                 else
                 {

@@ -49,6 +49,9 @@ namespace ActivityDiagram.Writers.Graphml.Model
                 case GraphmlEdgeType.Activity:
                     edges.Add(GraphmlEdgeBuilder.BuildActivity(edgeId, stringSourceNodeId, stringTargetNodeId, label));
                     break;
+                case GraphmlEdgeType.CriticalActivity:
+                    edges.Add(GraphmlEdgeBuilder.BuildCriticalActivity(edgeId, stringSourceNodeId, stringTargetNodeId, label));
+                    break;
                 case GraphmlEdgeType.Dummy:
                     edges.Add(GraphmlEdgeBuilder.BuildDummy(edgeId, stringSourceNodeId, stringTargetNodeId));
                     break;

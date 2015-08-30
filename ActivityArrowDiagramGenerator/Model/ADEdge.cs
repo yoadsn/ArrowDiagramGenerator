@@ -9,22 +9,25 @@ using System.Threading.Tasks;
 namespace ActivityArrowDiagramGenerator.Model
 {
     [DebuggerDisplay("{Source}->{Target}")]
-    internal struct ADEdge<TVertex> : IEdge<TVertex>
+    internal struct ADEdge : IEdge<ADVertex>
     {
-        private readonly TVertex source;
-        private readonly TVertex target;
+        private readonly ADVertex source;
+        private readonly ADVertex target;
         private readonly int? activityId;
+        private readonly bool isCritical;
 
-        public ADEdge(TVertex source, TVertex target, int? activityId = null)
+        public ADEdge(ADVertex source, ADVertex target, int? activityId = null, bool forceCritical = false)
         {
             this.source = source;
             this.target = target;
             this.activityId = activityId;
+            this.isCritical = (source.IsCritical && target.IsCritical) || forceCritical;
         }
 
-        public TVertex Source { get { return this.source; } }
-        public TVertex Target { get { return this.target; } }
+        public ADVertex Source { get { return this.source; } }
+        public ADVertex Target { get { return this.target; } }
         public int? ActivityId { get { return this.activityId; } }
+        public bool IsCritical { get { return this.isCritical; } }
 
         public override string ToString()
         {

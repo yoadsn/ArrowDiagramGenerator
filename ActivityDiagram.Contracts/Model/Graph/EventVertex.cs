@@ -15,7 +15,8 @@ namespace ActivityDiagram.Contracts.Model.Graph
 
         private EventVertex(int id, EventVertexType vertexType)
         {
-            Id = id;
+            this.Id = id;
+            this.Type = vertexType;
         }
 
         private EventVertex(int id, Activity milestoneActivity) : this(id, EventVertexType.Milestone)

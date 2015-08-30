@@ -13,15 +13,17 @@ namespace ActivityDiagram.Contracts.Model.Graph
         public readonly EventVertex Source;
         public readonly EventVertex Target;
         public readonly Activity Activity;
+        public readonly bool IsCritical;
 
-        public ActivityEdge(int id, EventVertex source, EventVertex target) : this (id, source, target, null) {}
+        public ActivityEdge(int id, EventVertex source, EventVertex target) : this (id, source, target, null, false) {}
 
-        public ActivityEdge(int id, EventVertex source, EventVertex target, Activity activity)
+        public ActivityEdge(int id, EventVertex source, EventVertex target, Activity activity, bool isCritical)
         {
             this.Id = id;
             this.Source = source;
             this.Target = target;
             this.Activity = activity;
+            this.IsCritical = isCritical;
         }
 
         public override bool Equals(Object obj)

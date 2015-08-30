@@ -54,7 +54,12 @@ namespace ActivityDiagram.Writers.Graphml
                 {
                     if (edge.Activity != null)
                     {
-                        graphmlXmlDocumentBuilder.AddEdge(edge.Id, edge.Source.Id, edge.Target.Id, GraphmlEdgeType.Activity, edge.Activity.Id.ToString());
+                        var edgeType = GraphmlEdgeType.Activity;
+                        if (edge.IsCritical)
+                        {
+                            edgeType = GraphmlEdgeType.CriticalActivity;
+                        }
+                        graphmlXmlDocumentBuilder.AddEdge(edge.Id, edge.Source.Id, edge.Target.Id, edgeType, edge.Activity.Id.ToString());
                     }
                     else
                     {

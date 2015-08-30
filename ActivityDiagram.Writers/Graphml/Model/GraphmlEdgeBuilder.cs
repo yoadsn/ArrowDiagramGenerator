@@ -73,5 +73,13 @@ namespace ActivityDiagram.Writers.Graphml.Model
 
             return node;
         }
+
+        public static graphmlGraphEdge BuildCriticalActivity(string id, string sourceNodeId, string targetNodeId, string label)
+        {
+            var node = BuildActivity(id, sourceNodeId, targetNodeId, label);
+            node.data.PolyLineEdge.LineStyle.width = "3.0";
+
+            return node;
+        }
     }
 }
