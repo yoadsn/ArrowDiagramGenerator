@@ -24,25 +24,32 @@ namespace ActivityDiagram.Writers.Graphviz
             sb.Append("digraph G {\n");
             foreach (var vertex in graph.Vertices)
             {
-                sb.AppendFormat("{0} [ label=\"\" ];\n", vertex.Id);
+                if (vertex.Type == EventVertexType.GraphEnd || vertex.Type == EventVertexType.GraphStart)
+                {
+                    sb.AppendFormat("{0} [ label=\"\" style=filled fillcolor=black ];\n", vertex.Id);
+                }
+                else
+                {
+                    sb.AppendFormat("{0} [ label=\"\" ];\n", vertex.Id);
+                }
             }
 
             foreach (var edge in graph.Edges)
             {
+                var penWidth = "1";
+                if (edge.IsCritical)
+                {
+                    penWidth = "3";
+                }
+
                 if (edge.Activity != null)
                 {
-                    var penWidth = "1";
-                    if (edge.IsCritical)
-                    {
-                        penWidth = "3";
-                    }
-                    
                     sb.AppendFormat("{0} -> {1} [ id={2} label={2} penwidth=\"{3}\" ];\n", edge.Source.Id, edge.Target.Id, edge.Activity.Id, penWidth);
                     
                 }
                 else
                 {
-                    sb.AppendFormat("{0} -> {1} [ style=dashed ];\n", edge.Source.Id, edge.Target.Id);
+                    sb.AppendFormat("{0} -> {1} [ style=dashed penwidth=\"{2}\" ];\n", edge.Source.Id, edge.Target.Id, penWidth);
                 }
             }
             sb.Append("}");

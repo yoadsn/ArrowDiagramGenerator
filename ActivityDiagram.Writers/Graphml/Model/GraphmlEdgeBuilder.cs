@@ -65,21 +65,29 @@ namespace ActivityDiagram.Writers.Graphml.Model
 
         public static graphmlGraphEdge BuildActivity(string id, string sourceNodeId, string targetNodeId, string label)
         {
-            var node = BuildDummy(id, sourceNodeId, targetNodeId);
-            node.data.PolyLineEdge.LineStyle.type = "line";
-            node.data.PolyLineEdge.EdgeLabel.hasText = "true";
-            node.data.PolyLineEdge.EdgeLabel.Text = label;
-            node.data.PolyLineEdge.EdgeLabel.visible = "true";
+            var edge = BuildDummy(id, sourceNodeId, targetNodeId);
+            edge.data.PolyLineEdge.LineStyle.type = "line";
+            edge.data.PolyLineEdge.EdgeLabel.hasText = "true";
+            edge.data.PolyLineEdge.EdgeLabel.Text = label;
+            edge.data.PolyLineEdge.EdgeLabel.visible = "true";
 
-            return node;
+            return edge;
         }
 
         public static graphmlGraphEdge BuildCriticalActivity(string id, string sourceNodeId, string targetNodeId, string label)
         {
-            var node = BuildActivity(id, sourceNodeId, targetNodeId, label);
-            node.data.PolyLineEdge.LineStyle.width = "3.0";
+            var edge = BuildActivity(id, sourceNodeId, targetNodeId, label);
+            edge.data.PolyLineEdge.LineStyle.width = "3.0";
 
-            return node;
+            return edge;
+        }
+
+        internal static graphmlGraphEdge BuildCriticalDummy(string id, string sourceNodeId, string targetNodeId)
+        {
+            var edge = BuildDummy(id, sourceNodeId, targetNodeId);
+            edge.data.PolyLineEdge.LineStyle.width = "3.0";
+
+            return edge;
         }
     }
 }

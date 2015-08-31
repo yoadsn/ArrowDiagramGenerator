@@ -115,6 +115,9 @@ namespace ActivityArrowDiagramGenerator
                             IEnumerable<ADEdge> dependenciesOfTarget;
                             if (adGraph.TryGetInEdges(target, out dependenciesOfTarget))
                             {
+                                // Always work with dependencies which are dummies - since activities cannot/should not be redirected.
+                                dependenciesOfTarget = dependenciesOfTarget.Where(dep => !dep.ActivityId.HasValue);
+
                                 if (commonDependenciesForAllTargets.Count == 0)
                                 {
                                     foreach (var dependency in dependenciesOfTarget)
@@ -134,6 +137,7 @@ namespace ActivityArrowDiagramGenerator
                         // Now, if we have some common dependncies of all targets which are not the current vertex - they should be redirected
                         foreach (var commonDependency in commonDependenciesForAllTargets.Where(d => d != pivotVertex))
                         {
+                            bool forceCritical = false;
                             IEnumerable<ADEdge> edgesOutOfDependency;
                             if (adGraph.TryGetOutEdges(commonDependency, out edgesOutOfDependency))
                             {
@@ -144,12 +148,14 @@ namespace ActivityArrowDiagramGenerator
                                 foreach (var edgeToRemove in edgesToRemove)
                                 {
                                     adGraph.RemoveEdge(edgeToRemove);
+
+                                    forceCritical = forceCritical || edgeToRemove.IsCritical;
                                 }
                             }
                             // Else should never happen
 
                             // This dependency should point at this vertex
-                            var edgeToAdd = new ADEdge(commonDependency, pivotVertex);
+                            var edgeToAdd = new ADEdge(commonDependency, pivotVertex, null, forceCritical);
                             adGraph.AddEdge(edgeToAdd);
                         }
                     }
@@ -159,91 +165,113 @@ namespace ActivityArrowDiagramGenerator
 
         private void MergeADGraph(BidirectionalGraph<ADVertex, ADEdge> adGraph)
         {
-            // Go over all non-activity edges - and try to merge them
-            var nonActivityEdges = adGraph.Edges.Where(e => !e.ActivityId.HasValue).ToList();
-            foreach (var edge in nonActivityEdges)
+            bool dummyEdgeRemovedOnIteration = true;
+
+            while (dummyEdgeRemovedOnIteration)
             {
-                // If this is a single edge out or a single edge in - it adds no information to the graph and can be merged.
-                var outDegree = adGraph.OutDegree(edge.Source);
-                var inDegree = adGraph.InDegree(edge.Target);
-                if (outDegree == 1 || inDegree == 1)
+                // Get all the current dummy edges in the graph
+                var nonActivityEdges = adGraph.Edges.Where(e => !e.ActivityId.HasValue).ToList();
+
+                foreach (var edge in nonActivityEdges)
                 {
-                    // Remove the vertex which has no other edges connected to it
-                    if (outDegree == 1 && inDegree != 1)
+                    // Only remove one edge at a time - then, need to reevaluate the graph.
+                    if (dummyEdgeRemovedOnIteration = TryRemoveDummyEdge(adGraph, edge)) break;
+
+                }
+            }
+        }
+
+        private bool TryRemoveDummyEdge(BidirectionalGraph<ADVertex, ADEdge> adGraph, ADEdge edge)
+        {
+            bool edgeRemoved = false;
+
+            // If this is a single edge out or a single edge in - it adds no information to the graph and can be merged.
+            var outDegree = adGraph.OutDegree(edge.Source);
+            var inDegree = adGraph.InDegree(edge.Target);
+            if (outDegree == 1 || inDegree == 1)
+            {
+                // Remove the vertex which has no other edges connected to it
+                if (outDegree == 1 && inDegree != 1)
+                {
+                    IEnumerable<ADEdge> allIncoming;
+                    if (!adGraph.TryGetInEdges(edge.Source, out allIncoming))
                     {
-                        IEnumerable<ADEdge> allIncoming;
-                        if (!adGraph.TryGetInEdges(edge.Source, out allIncoming))
+                        allIncoming = new List<ADEdge>();
+                    }
+
+                    bool abortMerge = false;
+
+                    // Sanity check - don't make parallel edges (can have better huristic for this?)
+                    foreach (var incomingEdge in allIncoming.ToList())
+                    {
+                        ADEdge dummy;
+                        if (adGraph.TryGetEdge(incomingEdge.Source, edge.Target, out dummy))
                         {
-                            allIncoming = new List<ADEdge>();
-                        }
-
-                        bool abortMerge = false;
-
-                        // Sanity check - don't make parallel edges (can have better huristic for this?)
-                        foreach (var incomingEdge in allIncoming.ToList()) {
-                            ADEdge dummy;
-                            if (adGraph.TryGetEdge(incomingEdge.Source, edge.Target, out dummy))
-                            {
-                                abortMerge = true;
-                            }
-                        }
-
-                        if (!abortMerge)
-                        {
-                            // Add the edges with the new source vertex
-                            // And remove the old edges
-                            foreach (var incomingEdge in allIncoming.ToList())
-                            {
-                                adGraph.AddEdge(new ADEdge(incomingEdge.Source, edge.Target, incomingEdge.ActivityId, incomingEdge.IsCritical));
-                                adGraph.RemoveEdge(incomingEdge);
-                            }
-
-                            // Rmove the edge which is no longer needed
-                            adGraph.RemoveEdge(edge);
-
-                            // Now remove the vertex which was merged
-                            adGraph.RemoveVertex(edge.Source);
+                            abortMerge = true;
                         }
                     }
-                    else
+
+                    if (!abortMerge)
                     {
-                        IEnumerable<ADEdge> allOutgoing;
-                        if (!adGraph.TryGetOutEdges(edge.Target, out allOutgoing))
+                        // Add the edges with the new source vertex
+                        // And remove the old edges
+                        foreach (var incomingEdge in allIncoming.ToList())
                         {
-                            allOutgoing = new List<ADEdge>();
+                            adGraph.AddEdge(new ADEdge(incomingEdge.Source, edge.Target, incomingEdge.ActivityId, incomingEdge.IsCritical));
+                            adGraph.RemoveEdge(incomingEdge);
                         }
 
-                        bool abortMerge = false;
+                        // Rmove the edge which is no longer needed
+                        adGraph.RemoveEdge(edge);
 
-                        // Sanity check - don't make parallel edges (can have better huristic for this?)
-                        foreach (var incomingEdge in allOutgoing.ToList())
+                        // Now remove the vertex which was merged
+                        adGraph.RemoveVertex(edge.Source);
+
+                        edgeRemoved = true;
+                    }
+                }
+                else
+                {
+                    IEnumerable<ADEdge> allOutgoing;
+                    if (!adGraph.TryGetOutEdges(edge.Target, out allOutgoing))
+                    {
+                        allOutgoing = new List<ADEdge>();
+                    }
+
+                    bool abortMerge = false;
+
+                    // Sanity check - don't make parallel edges (can have better huristic for this?)
+                    foreach (var incomingEdge in allOutgoing.ToList())
+                    {
+                        ADEdge dummy;
+                        if (adGraph.TryGetEdge(edge.Source, incomingEdge.Target, out dummy))
                         {
-                            ADEdge dummy;
-                            if (adGraph.TryGetEdge(edge.Source, incomingEdge.Target, out dummy))
-                            {
-                                abortMerge = true;
-                            }
+                            abortMerge = true;
+                        }
+                    }
+
+                    if (!abortMerge)
+                    {
+                        // Add the edges with the new source vertex
+                        // And remove the old edges
+                        foreach (var outgoingEdge in allOutgoing.ToList())
+                        {
+                            adGraph.AddEdge(new ADEdge(edge.Source, outgoingEdge.Target, outgoingEdge.ActivityId, outgoingEdge.IsCritical));
+                            adGraph.RemoveEdge(outgoingEdge);
                         }
 
-                        if (!abortMerge)
-                        {
-                            // Add the edges with the new source vertex
-                            // And remove the old edges
-                            foreach (var outgoingEdge in allOutgoing.ToList())
-                            {
-                                adGraph.AddEdge(new ADEdge(edge.Source, outgoingEdge.Target, outgoingEdge.ActivityId, outgoingEdge.IsCritical));
-                                adGraph.RemoveEdge(outgoingEdge);
-                            }
+                        // Rmove the edge which is no longer needed
+                        adGraph.RemoveEdge(edge);
 
-                            // Rmove the edge which is no longer needed
-                            adGraph.RemoveEdge(edge);
+                        // Now remove the vertex which was merged
+                        adGraph.RemoveVertex(edge.Target);
 
-                            // Now remove the vertex which was merged
-                            adGraph.RemoveVertex(edge.Target);
-                        }
+                        edgeRemoved = true;
                     }
                 }
             }
+
+            return edgeRemoved;
         }
 
         private ActivityArrowGraph CreateActivityArrowGraph(BidirectionalGraph<ADVertex, ADEdge> graph)

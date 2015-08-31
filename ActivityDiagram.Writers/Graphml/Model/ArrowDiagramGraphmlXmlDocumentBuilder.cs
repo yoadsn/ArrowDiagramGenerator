@@ -55,6 +55,9 @@ namespace ActivityDiagram.Writers.Graphml.Model
                 case GraphmlEdgeType.Dummy:
                     edges.Add(GraphmlEdgeBuilder.BuildDummy(edgeId, stringSourceNodeId, stringTargetNodeId));
                     break;
+                case GraphmlEdgeType.CriticalDummy:
+                    edges.Add(GraphmlEdgeBuilder.BuildCriticalDummy(edgeId, stringSourceNodeId, stringTargetNodeId));
+                    break;
                 default: break;
             }
 

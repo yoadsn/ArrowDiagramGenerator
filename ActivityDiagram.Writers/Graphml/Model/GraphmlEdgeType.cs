@@ -10,6 +10,7 @@ namespace ActivityDiagram.Writers.Graphml.Model
     {
         Activity,
         CriticalActivity,
-        Dummy
+        Dummy,
+        CriticalDummy,
     }
 }
