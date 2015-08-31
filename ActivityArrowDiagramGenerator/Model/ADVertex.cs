@@ -32,7 +32,7 @@ namespace ActivityArrowDiagramGenerator.Model
         {
             get
             {
-                return this.ActivityId;
+                return this.activityId;
             }
         }
 

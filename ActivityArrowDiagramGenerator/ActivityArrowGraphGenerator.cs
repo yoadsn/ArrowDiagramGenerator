@@ -111,29 +111,24 @@ namespace ActivityArrowDiagramGenerator
                         foreach (var outEdge in foundOutEdges)
                         {
                             var target = outEdge.Target;
-                            if (target.Type == ActivityVertexType.ActivityStart)
+
+                            IEnumerable<ADEdge> dependenciesOfTarget;
+                            if (adGraph.TryGetInEdges(target, out dependenciesOfTarget))
                             {
-                                IEnumerable<ADEdge> dependenciesOfTarget;
-                                if (adGraph.TryGetInEdges(target, out dependenciesOfTarget))
+                                if (commonDependenciesForAllTargets.Count == 0)
                                 {
-                                    if (commonDependenciesForAllTargets.Count == 0)
+                                    foreach (var dependency in dependenciesOfTarget)
                                     {
-                                        foreach (var dependency in dependenciesOfTarget)
-                                        {
-                                            commonDependenciesForAllTargets.Add(dependency.Source);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        commonDependenciesForAllTargets.IntersectWith(dependenciesOfTarget.Select(d => d.Source).AsEnumerable());
+                                        commonDependenciesForAllTargets.Add(dependency.Source);
                                     }
                                 }
-                                // Else can never happen - the out edge for the current vertice is the in edge of the dependent
-                                // so at least once exists.
+                                else
+                                {
+                                    commonDependenciesForAllTargets.IntersectWith(dependenciesOfTarget.Select(d => d.Source).AsEnumerable());
+                                }
                             }
-                            else // That means the inspected vertice has a dependent which is not an activity (need to inspect these cases)
-                            {
-                            }
+                            // Else can never happen - the out edge for the current vertice is the in edge of the dependent
+                            // so at least once exists.
                         }
 
                         // Now, if we have some common dependncies of all targets which are not the current vertex - they should be redirected
