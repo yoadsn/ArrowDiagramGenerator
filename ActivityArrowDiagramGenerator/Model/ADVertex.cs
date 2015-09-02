@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ActivityArrowDiagramGenerator.Model
+namespace ActivityDiagram.Generator.Model
 {
     internal struct ADVertex
     {

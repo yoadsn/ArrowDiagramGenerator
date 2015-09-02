@@ -32,7 +32,7 @@ namespace ActivityDiagram.Readers.CSV
             return rows.Select(actrow =>
                 new ActivityDependency(
                     new Activity(actrow.ActivityId, actrow.ActivityDuration, actrow.ActivityTotalSlack),
-                    actrow.Predecessors));
+                    actrow.Predecessors)).ToList();
         }
 
         public void Dispose()

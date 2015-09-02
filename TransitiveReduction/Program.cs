@@ -1,5 +1,5 @@
-﻿using ActivityArrowDiagramGenerator;
-using ActivityArrowDiagramGenerator.Model;
+﻿using ActivityDiagram.Generator;
+using ActivityDiagram.Generator.Model;
 using ActivityDiagram.Contracts.Model.Activities;
 using ActivityDiagram.Readers.CSV;
 using ActivityDiagram.Writers.Graphml;

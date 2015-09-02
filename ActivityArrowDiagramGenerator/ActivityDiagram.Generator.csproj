@@ -7,8 +7,8 @@
     <ProjectGuid>{F33C3A11-EFA6-4DD3-81AC-FE9C93A9C0A3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ActivityArrowDiagramGenerator</RootNamespace>
-    <AssemblyName>ActivityArrowDiagramGenerator</AssemblyName>
+    <RootNamespace>ActivityDiagram.Generator</RootNamespace>
+    <AssemblyName>ActivityDiagram.Generator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

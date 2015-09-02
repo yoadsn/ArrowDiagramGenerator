@@ -17,10 +17,10 @@ namespace ActivityDiagram.Writers.Graphml
         private readonly XmlSerializer xmlSerializer;
         private readonly string outputFilename;
 
-        public GraphmlArrowGraphWriter(string outputFilename)
+        public GraphmlArrowGraphWriter(string filename)
         {
             xmlSerializer = new XmlSerializer(typeof(graphml));
-            this.outputFilename = outputFilename;
+            this.outputFilename = filename;
         }
 
         public void Write(ActivityArrowGraph graph)

@@ -165,9 +165,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActivityArrowDiagramGenerator\ActivityArrowDiagramGenerator.csproj">
+    <ProjectReference Include="..\ActivityArrowDiagramGenerator\ActivityDiagram.Generator.csproj">
       <Project>{f33c3a11-efa6-4dd3-81ac-fe9c93a9c0a3}</Project>
-      <Name>ActivityArrowDiagramGenerator</Name>
+      <Name>ActivityDiagram.Generator</Name>
     </ProjectReference>
     <ProjectReference Include="..\ActivityDiagram.Contracts\ActivityDiagram.Contracts.csproj">
       <Project>{f454155a-9f69-4404-9bac-453733d94574}</Project>

@@ -1,4 +1,4 @@
-﻿using ActivityArrowDiagramGenerator.Model;
+﻿using ActivityDiagram.Generator.Model;
 using ActivityDiagram.Contracts.Model.Activities;
 using ActivityDiagram.Contracts.Model.Graph;
 using QuickGraph;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ActivityArrowDiagramGenerator
+namespace ActivityDiagram.Generator
 {
     public class ActivityArrowGraphGenerator
     {

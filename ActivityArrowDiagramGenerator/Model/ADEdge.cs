@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ActivityArrowDiagramGenerator.Model
+namespace ActivityDiagram.Generator.Model
 {
     [DebuggerDisplay("{Source}->{Target}")]
     internal struct ADEdge : IEdge<ADVertex>
