@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TransitiveReduction")]
+[assembly: AssemblyTitle("ActivityDiagram.Readers.Mpp")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TransitiveReduction")]
+[assembly: AssemblyProduct("ActivityDiagram.Readers.Mpp")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e3a7ed9b-3b7d-43d7-b1b2-13915d864a6b")]
+[assembly: Guid("3edbad79-2033-4441-b6e4-cbddfb7ac41a")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,6 +1,7 @@
 ﻿using ActivityDiagram.Contracts;
 using ActivityDiagram.Generator;
 using ActivityDiagram.Readers.CSV;
+using ActivityDiagram.Readers.Mpp;
 using ActivityDiagram.Writers.Graphml;
 using ActivityDiagram.Writers.Graphviz;
 using ManyConsole;
@@ -18,7 +19,7 @@ namespace ActivityDiagram.Application.Sample.Commands
         {
             this.IsCommand("gen", "Genreates an arrow diagram from an activity dependency graph.");
 
-            this.HasOption("it|intype=", "The file type of the input activity dependencies file. Available types: csv. default: csv", s => { inputType = s ?? "csv"; });
+            this.HasOption("it|intype=", "The file type of the input activity dependencies file. Available types: csv, mpp. default: csv", s => { inputType = s ?? "csv"; });
             this.HasOption("ot|outtype=", "The file type of the output arrow diagram. Available types: graphml, dot. default: graphml", s => { outputType = s ?? "graphml"; });
             this.HasOption("o|output=", "The output file name. default: '<intput file>.out.type'", s => { outputFile = s ?? ""; });
             
@@ -49,10 +50,10 @@ namespace ActivityDiagram.Application.Sample.Commands
             
 
             var reader = GetReaderForType(inputType, inputFile);
-            Console.WriteLine("Reading activities from input file {0}", inputFile);
+            Console.WriteLine("Using activities input file {0}", inputFile);
 
             var writer = GetWriterForType(outputType, outputFile);
-            Console.WriteLine("Writing arrow diagram to output file {0}", outputFile);
+            Console.WriteLine("Using arrow diagram output file {0}", outputFile);
 
             if (writer != null && reader != null)
             {
@@ -65,8 +66,6 @@ namespace ActivityDiagram.Application.Sample.Commands
                     Console.WriteLine("Unable to generate the diagram. Exception:\n{0}", ex.ToString());
                     return -1;
                 }
-
-                Console.WriteLine("Done.", outputFile);
             }
             
             return 0;
@@ -74,12 +73,15 @@ namespace ActivityDiagram.Application.Sample.Commands
 
         private void CreateArrowDiagram(IActivitiesReader reader, IArrowGraphWriter writer)
         {
-            
+
+            Console.WriteLine("Reading activities...", inputFile);
             var activities = reader.Read();
             var graphGenerator = new ActivityArrowGraphGenerator(activities);
             Console.WriteLine("Generating Graph...", outputFile);
             var arrowGraph = graphGenerator.GenerateGraph();
+            Console.WriteLine("Writing Graph...", inputFile);
             writer.Write(arrowGraph);
+            Console.WriteLine("Done.", outputFile);
         }
 
         private IActivitiesReader GetReaderForType(string type, string intputFile)
@@ -90,6 +92,8 @@ namespace ActivityDiagram.Application.Sample.Commands
                 {
                     case "csv":
                         return GetCsvReader(inputFile);
+                    case "mpp":
+                        return GetMppReader(inputFile);
                     default:
                         throw new ConsoleHelpAsException(String.Format("The input type {0} is not supported", type));
                 }
@@ -104,6 +108,11 @@ namespace ActivityDiagram.Application.Sample.Commands
             }
 
             return null;
+        }
+
+        private IActivitiesReader GetMppReader(string inputFile)
+        {
+            return new MppActivitiesReader(inputFile);
         }
 
         private IActivitiesReader GetCsvReader(string inputFile)

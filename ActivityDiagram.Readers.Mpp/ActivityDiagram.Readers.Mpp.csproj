@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9A1CC5E9-381C-4D7E-9EEA-0F37ECB3E949}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{346D6988-A012-4BB0-87C0-BD9E018E34DD}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TransitiveReduction</RootNamespace>
-    <AssemblyName>TransitiveReduction</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>ActivityDiagram.Readers.Mpp</RootNamespace>
+    <AssemblyName>ActivityDiagram.Readers.Mpp</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,124 +30,140 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GraphVizWrapper">
-      <HintPath>..\packages\GraphViz.NET.1.0.0\lib\net40\GraphVizWrapper.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.AWT.WinForms">
+    <Reference Include="IKVM.AWT.WinForms, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.AWT.WinForms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Beans">
+    <Reference Include="IKVM.OpenJDK.Beans, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Beans.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Charsets">
+    <Reference Include="IKVM.OpenJDK.Charsets, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Charsets.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Cldrdata">
+    <Reference Include="IKVM.OpenJDK.Cldrdata, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Cldrdata.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Corba">
+    <Reference Include="IKVM.OpenJDK.Corba, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Corba.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Core">
+    <Reference Include="IKVM.OpenJDK.Core, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Jdbc">
+    <Reference Include="IKVM.OpenJDK.Jdbc, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Jdbc.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Localedata">
+    <Reference Include="IKVM.OpenJDK.Localedata, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Localedata.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Management">
+    <Reference Include="IKVM.OpenJDK.Management, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Management.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Media">
+    <Reference Include="IKVM.OpenJDK.Media, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Media.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Misc">
+    <Reference Include="IKVM.OpenJDK.Misc, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Misc.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Naming">
+    <Reference Include="IKVM.OpenJDK.Naming, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Naming.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Nashorn">
+    <Reference Include="IKVM.OpenJDK.Nashorn, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Nashorn.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Remoting">
+    <Reference Include="IKVM.OpenJDK.Remoting, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Remoting.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Security">
+    <Reference Include="IKVM.OpenJDK.Security, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Security.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.SwingAWT">
+    <Reference Include="IKVM.OpenJDK.SwingAWT, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.SwingAWT.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Text">
+    <Reference Include="IKVM.OpenJDK.Text, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Text.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Tools">
+    <Reference Include="IKVM.OpenJDK.Tools, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Tools.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.Util">
+    <Reference Include="IKVM.OpenJDK.Util, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.Util.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.API">
+    <Reference Include="IKVM.OpenJDK.XML.API, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.XML.API.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.Bind">
+    <Reference Include="IKVM.OpenJDK.XML.Bind, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.XML.Bind.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.Crypto">
+    <Reference Include="IKVM.OpenJDK.XML.Crypto, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.XML.Crypto.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.Parse">
+    <Reference Include="IKVM.OpenJDK.XML.Parse, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.XML.Parse.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.Transform">
+    <Reference Include="IKVM.OpenJDK.XML.Transform, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.XML.Transform.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.WebServices">
+    <Reference Include="IKVM.OpenJDK.XML.WebServices, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.XML.WebServices.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.OpenJDK.XML.XPath">
+    <Reference Include="IKVM.OpenJDK.XML.XPath, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.OpenJDK.XML.XPath.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.Reflection">
+    <Reference Include="IKVM.Reflection, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.Reflection.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.Runtime">
+    <Reference Include="IKVM.Runtime, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.Runtime.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="IKVM.Runtime.JNI">
+    <Reference Include="IKVM.Runtime.JNI, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\IKVM.Runtime.JNI.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="mpxj-for-csharp">
+    <Reference Include="mpxj-for-csharp, Version=5.1.5.0, Culture=neutral, PublicKeyToken=8783d630753e2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\mpxj-for-csharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="MpxjUtilities">
+    <Reference Include="MpxjUtilities, Version=5.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\MpxjUtilities.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="poi-3.12-20150511">
+    <Reference Include="poi-3.12-20150511, Version=5.1.5.0, Culture=neutral, PublicKeyToken=8783d630753e2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\poi-3.12-20150511.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="QuickGraph">
-      <HintPath>..\packages\QuickGraphPCL.3.6.61114.2\lib\net40-client\QuickGraph.dll</HintPath>
-    </Reference>
-    <Reference Include="QuickGraph.Data">
-      <HintPath>..\packages\QuickGraphPCL.3.6.61114.2\lib\net40-client\QuickGraph.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="QuickGraph.Graphviz">
-      <HintPath>..\packages\QuickGraphPCL.3.6.61114.2\lib\net40-client\QuickGraph.Graphviz.dll</HintPath>
-    </Reference>
-    <Reference Include="QuickGraph.Serialization">
-      <HintPath>..\packages\QuickGraphPCL.3.6.61114.2\lib\net40-client\QuickGraph.Serialization.dll</HintPath>
-    </Reference>
-    <Reference Include="rtfparserkit-1.2.0">
+    <Reference Include="rtfparserkit-1.2.0, Version=5.1.5.0, Culture=neutral, PublicKeyToken=8783d630753e2b3f, processorArchitecture=MSIL">
       <HintPath>..\packages\net.sf.mpxj-for-csharp.5.1.5\lib\rtfparserkit-1.2.0.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -157,37 +171,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="MppActivitiesReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActivityArrowDiagramGenerator\ActivityDiagram.Generator.csproj">
-      <Project>{f33c3a11-efa6-4dd3-81ac-fe9c93a9c0a3}</Project>
-      <Name>ActivityDiagram.Generator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ActivityDiagram.Contracts\ActivityDiagram.Contracts.csproj">
       <Project>{f454155a-9f69-4404-9bac-453733d94574}</Project>
       <Name>ActivityDiagram.Contracts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ActivityDiagram.Readers\ActivityDiagram.Readers.csproj">
-      <Project>{23992c6b-78ff-4f1b-ad69-56f275c36834}</Project>
-      <Name>ActivityDiagram.Readers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ActivityDiagram.Writers\ActivityDiagram.Writers.csproj">
-      <Project>{84516c22-73c9-44b8-94ce-d83cdb589f9a}</Project>
-      <Name>ActivityDiagram.Writers</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\QuickGraph.TransitiveReduction\QuickGraph.TransitiveReduction.csproj">
-      <Project>{c074943f-0cf7-4dfd-b265-42b7f8aaa8f1}</Project>
-      <Name>QuickGraph.TransitiveReduction</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
