@@ -76,7 +76,7 @@ namespace ActivityDiagram.Application.Sample.Commands
 
             Console.WriteLine("Reading activities...", inputFile);
             var activities = reader.Read();
-            var graphGenerator = new ActivityArrowGraphGenerator(activities);
+            var graphGenerator = new ArrowGraphGenerator(activities);
             Console.WriteLine("Generating Graph...", outputFile);
             var arrowGraph = graphGenerator.GenerateGraph();
             Console.WriteLine("Writing Graph...", inputFile);

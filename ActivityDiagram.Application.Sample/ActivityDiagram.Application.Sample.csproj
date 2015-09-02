@@ -59,7 +59,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActivityArrowDiagramGenerator\ActivityDiagram.Generator.csproj">
+    <ProjectReference Include="..\ActivityDiagram.Generator\ActivityDiagram.Generator.csproj">
       <Project>{f33c3a11-efa6-4dd3-81ac-fe9c93a9c0a3}</Project>
       <Name>ActivityDiagram.Generator</Name>
     </ProjectReference>

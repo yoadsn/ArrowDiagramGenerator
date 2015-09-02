@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ActivityDiagram.Generator
 {
-    public class ActivityArrowGraphGenerator
+    public class ArrowGraphGenerator
     {
         private IEnumerable<ActivityDependency> activityDependencies;
         private Dictionary<int, Activity> activitiesDictionary;
@@ -20,7 +20,7 @@ namespace ActivityDiagram.Generator
         int edgesNextId = 0;
         int verticeNextId = 0;
 
-        public ActivityArrowGraphGenerator(IEnumerable<ActivityDependency> activityDependencies)
+        public ArrowGraphGenerator(IEnumerable<ActivityDependency> activityDependencies)
         {
             this.activityDependencies = activityDependencies;
             this.activitiesDictionary = this.activityDependencies.ToDictionary(dep => dep.Activity.Id, dep => dep.Activity);

@@ -55,7 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActivityArrowGraphGenerator.cs" />
+    <Compile Include="ArrowGraphGenerator.cs" />
     <Compile Include="Model\ADEdge.cs" />
     <Compile Include="Model\ADVertex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
