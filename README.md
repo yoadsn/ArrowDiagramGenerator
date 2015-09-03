@@ -1,4 +1,4 @@
-dActivity Arrow Diagram Generator
+Activity Arrow Diagram Generator
 ======
 
 Representing the dependency tree of activities within a project is better done with arrow diagrams compared to node diagrams (Which is how MS-Project draws them). The difference is that in a node diagram every node is an activity and an edge is a dependency. With arrow diagrams, the activity is the edge and nodes represent events (like the start/end events of the activities).
