@@ -1,7 +1,7 @@
 Activity Arrow Diagram Generator
 ======
 
-Representing the dependency tree of activities within a project is better done with arrow diagrams compared to node diagrams (Which is how MS-Project draws them). The different is that in a node diagram every node is an activity and an edge is a dependency. With arrow diagrams, the activity is the edge and nodes represent events (like the start/end events of the activities).
+Representing the dependency tree of activities within a project is better done with arrow diagrams compared to node diagrams (Which is how MS-Project draws them). The difference is that in a node diagram every node is an activity and an edge is a dependency. With arrow diagrams, the activity is the edge and nodes represent events (like the start/end events of the activities).
 
 Following the guidance of IDesign's project design methods, I have come to appreciate the arrow diagram as a tool to visualize and understand the forces that operate within a project and its activity dependencies.
 
@@ -23,11 +23,11 @@ Assume we have the following project:
 
 Using a node diagram we could represent it like this:
 
-![Node Diagram Example](./docs/assets/node-example.png "Node Diagram Example");
+![Node Diagram Example](./docs/assets/node-example.png "Node Diagram Example")
 
 And with an arrow diagram it would look like this:
 
-![Arrow Diagram Example](./docs/assets/arrow-example.png "Arrow Diagram Example");
+![Arrow Diagram Example](./docs/assets/arrow-example.png "Arrow Diagram Example")
 
 In small graphs like the above the different is really subtle, but the more complex the project gets the easier it is to read its arrow diagram compared with its node diagram.
 
@@ -76,7 +76,7 @@ The writers are tasked with producing the arrow diagram from the graph generated
 
 In those representations the following notation is used:
 
-![Arrow Diagram Example](./docs/assets/arrow-legend.png "Arrow Diagram Legend");
+![Arrow Diagram Example](./docs/assets/arrow-legend.png "Arrow Diagram Legend")
 
 - Standard Line - Is an activity edge
 - Dashed Line - Is a dummy line representing dependency where there is not activity (this is an artifact of building those diagrams where we cannot 'split' and edge, but we need to)
@@ -92,7 +92,7 @@ After you open the result *graphml* file in yEd you would see only this:
 
 ![yEd initial open](./docs/assets/yed-writer-initial.png "Black hole of yEd")
 
-This is the entire graph super-imposed into one coordinate. Since I did not set the coordinates of any of the elements. I suggest you experiment with the `Layout` menu to auto-layout this graph and start working on it. I find the following get me to a reasonable starting point - Open the menu `Layout` -> `FlowChart`. Set it up like this:
+This is the entire graph super-imposed into one coordinate - Since I did not set the coordinates of any of the elements. I suggest you experiment with the `Layout` menu to auto-layout this graph and start working on it. I find the following gets me to a reasonable starting point - Open the menu `Layout` -> `FlowChart`. Set it up like this:
 
 ![yEd flowchart layout](./docs/assets/yed-flowchart-layout.png "yEd flowchart layout settings you could try")
 
@@ -102,7 +102,7 @@ I can't get you all the way to a great arrow diagram, you would have to do some 
 
 This writer produces DOT files, which is the scripting language of the [GraphViz](http://www.graphviz.org/) tool-set. These DOT files are not the final product, you would have to run them through the GraphViz tools to get the final diagram.
 
-If you have GraphViz installed, open from the `bin` library the `gvedit.exe` tools which is the simplest way to load and "execute" dot files. If you want to do some more advanced stuff you will have to dive deeper into GraphViz.
+If you have GraphViz installed, open from the `bin` library the `gvedit.exe` tool which is the simplest way to load and "execute" dot files. If you want to do some more advanced stuff you will have to dive deeper into GraphViz.
 
 Alternatively, to get a quick SVG output of the DOT file, you can paste its content on the browser based port of GraphViz you can find [here](http://www.webgraphviz.com/).
 
@@ -112,13 +112,13 @@ The downside of using GraphViz compared with yEd Graph Editor is that the final 
 
 The generator follows a basic algorithm I came up with to generate the final arrow graph. I will explain more about the steps of this algorithm in a blog post I plan to publish soon.
 
-The generator can be used standalone as long as you can provide it with the expected data (activities and dependencies) and work with the output result (graph). I have some vague plans to embed it in an office app targeting MS Project, but I guess free time stands between me and this goal.
+The generator can be used standalone as long as you can provide it with the expected data (activities and dependencies) and work with the output result (graph). I have some vague plans to embed it in an office store app targeting MS Project, but I guess free time stands between me and this goal.
 
-The generator still produces quite verbose diagrams and does not support some fancy optimization like collapsing multiple activities into one edge (when possible) and reducing diagram complexity by introducing milestones. I would appreciate any contributions to improve on that.
+The generator still produces quite verbose diagrams and does not support some fancy optimizations like collapsing multiple activities into one edge (when possible) and reducing diagram complexity by introducing milestones. I would appreciate any contributions to improve on that.
 
 # Contributing #
 
-There is a lot more to do to make this a useful tool (for the admittedly small community of people who actually needs it). I would love PR's, Comments or Issues. Any feedback on the work I have done is welcome and appreciated.
+There is a lot more to do to make this a useful tool (for the admittedly small community of people who actually needs it). I would love PR's, Comments or Issues opened. Any feedback on the work I have done is welcome and appreciated.
 
 
 # Requirements #
@@ -127,4 +127,4 @@ There is a lot more to do to make this a useful tool (for the admittedly small c
 
 # Credits #
 
-Thanks IDesign, for exposing me to arrow diagrams.
+Thanks [IDesign](http://www.idesign.net/), for exposing me to arrow diagrams.
