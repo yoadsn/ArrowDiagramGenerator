@@ -110,7 +110,7 @@ The downside of using GraphViz compared with yEd Graph Editor is that the final 
 
 ## The Generator ##
 
-The generator follows a basic algorithm I came up with to generate the final arrow graph. I will explain more about the steps of this algorithm in a blog post I plan to publish soon.
+The generator follows a basic algorithm I came up with to generate the final arrow graph. I explain more about the algorithm in the [wiki](https://github.com/yoadsn/ArrowDiagramGenerator/wiki/Diagram-Generation-Algorithm)
 
 The generator can be used standalone as long as you can provide it with the expected data (activities and dependencies) and work with the output result (graph). I have some vague plans to embed it in an office store app targeting MS Project, but I guess free time stands between me and this goal.
 
