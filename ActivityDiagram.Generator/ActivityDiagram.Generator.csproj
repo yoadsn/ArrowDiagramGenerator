@@ -56,8 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrowGraphGenerator.cs" />
-    <Compile Include="Model\ADEdge.cs" />
-    <Compile Include="Model\ADVertex.cs" />
+    <Compile Include="Model\InternalActivityEdge.cs" />
+    <Compile Include="Model\InternalEventVertex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

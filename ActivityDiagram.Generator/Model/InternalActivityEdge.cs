@@ -9,23 +9,23 @@ using System.Threading.Tasks;
 namespace ActivityDiagram.Generator.Model
 {
     [DebuggerDisplay("{Source}->{Target}")]
-    internal struct ADEdge : IEdge<ADVertex>
+    internal class InternalActivityEdge : IEdge<InternalEventVertex>
     {
-        private readonly ADVertex source;
-        private readonly ADVertex target;
+        private readonly InternalEventVertex source;
+        private readonly InternalEventVertex target;
         private readonly int? activityId;
         private readonly bool isCritical;
 
-        public ADEdge(ADVertex source, ADVertex target, int? activityId = null, bool forceCritical = false)
+        public InternalActivityEdge(InternalEventVertex source, InternalEventVertex target, bool isCritical, int? activityId = null)
         {
             this.source = source;
             this.target = target;
             this.activityId = activityId;
-            this.isCritical = (source.IsCritical && target.IsCritical) || forceCritical;
+            this.isCritical = isCritical;
         }
 
-        public ADVertex Source { get { return this.source; } }
-        public ADVertex Target { get { return this.target; } }
+        public InternalEventVertex Source { get { return this.source; } }
+        public InternalEventVertex Target { get { return this.target; } }
         public int? ActivityId { get { return this.activityId; } }
         public bool IsCritical { get { return this.isCritical; } }
 

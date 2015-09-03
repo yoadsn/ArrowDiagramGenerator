@@ -7,17 +7,19 @@ using System.Threading.Tasks;
 
 namespace ActivityDiagram.Generator.Model
 {
-    internal struct ADVertex
+    internal class InternalEventVertex
     {
-        private readonly int? activityId;
+        private readonly string id;
+        private readonly int activityId;
         private readonly ActivityVertexType type;
         private readonly bool critical;
 
-        public ADVertex(int? activityId, ActivityVertexType type, bool critical)
+        private InternalEventVertex(string id, int activityId, ActivityVertexType type, bool critical)
         {
             this.activityId = activityId;
             this.type = type;
             this.critical = critical;
+            this.id = id;
         }
 
         public string Id
@@ -28,7 +30,7 @@ namespace ActivityDiagram.Generator.Model
             }
         }
 
-        public int? ActivityId
+        public int ActivityId
         {
             get
             {
@@ -54,54 +56,47 @@ namespace ActivityDiagram.Generator.Model
 
         public override bool Equals(Object obj)
         {
-            return obj is ADVertex && this == (ADVertex)obj;
+            return obj is InternalEventVertex && this == (InternalEventVertex)obj;
         }
         public override int GetHashCode()
         {
-            return activityId.GetHashCode() ^ type.GetHashCode();
+            return id.GetHashCode();
         }
-        public static bool operator ==(ADVertex x, ADVertex y)
+        public static bool operator ==(InternalEventVertex x, InternalEventVertex y)
         {
-            return x.activityId == y.activityId && x.type == y.type;
+            return x.id == y.id;
         }
-        public static bool operator !=(ADVertex x, ADVertex y)
+        public static bool operator !=(InternalEventVertex x, InternalEventVertex y)
         {
             return !(x == y);
         }
 
         public override string ToString()
         {
-            return this.FormatId();
+            return this.id;
         }
 
-        private string FormatId()
+        public static InternalEventVertex Create(int activityId, ActivityVertexType type, bool critical)
         {
-            Debug.Assert(this.activityId.HasValue);
+            return new InternalEventVertex(FormatId(activityId, type), activityId, type, critical);
+        }
 
-            if (this.type == ActivityVertexType.ActivityStart)
+        private static string FormatId(int activityId, ActivityVertexType type)
+        {
+            if (type == ActivityVertexType.ActivityStart)
             {
-                return "S" + this.activityId.Value;
-            }
-            else if (this.type == ActivityVertexType.ActivityEnd)
-            {
-                return "E" + this.activityId.Value;
+                return "S" + activityId;
             }
             else
             {
-                throw new FormatException("Verex with an activity ID must be the start or end of an activity.");
+                return "E" + activityId;
             }
-        }
-
-        public static ADVertex New(int? activityId, ActivityVertexType type, bool critical)
-        {
-            return new ADVertex(activityId, type, critical);
         }
     }
 
     public enum ActivityVertexType
     {
         ActivityStart,
-        ActivityEnd,
-        Milestone
+        ActivityEnd
     }
 }
